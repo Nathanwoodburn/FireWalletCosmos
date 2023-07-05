@@ -42,7 +42,10 @@
             MinimizeBox = false;
             Name = "Loader";
             Text = "Loader";
-            Load += Loader_Load;
+            Visible = false;
+            Opacity = 0;
+            FormBorderStyle = FormBorderStyle.SizableToolWindow;
+            ShowInTaskbar = false;
             ResumeLayout(false);
         }
 

@@ -39,11 +39,7 @@ namespace FireWalletLite
                 string repositoryUrl = "https://github.com/handshake-org/hsd.git";
                 string destinationPath = dir + "hsd";
                 CloneRepository(repositoryUrl, destinationPath);
-
             }
-
-
-
             // Start HSD
             HSDProcess.StartInfo.RedirectStandardInput = true;
             HSDProcess.StartInfo.RedirectStandardOutput = false;
@@ -70,15 +66,8 @@ namespace FireWalletLite
                 Application.DoEvents();
             }
             splashScreen.Dispose();
+            mainForm.Show();
         }
-
-        private void Loader_Load(object sender, EventArgs e)
-        {
-            this.ShowInTaskbar = false;
-            this.Opacity = 0;
-        }
-
-
         #region Git
         public void CloneRepository(string repositoryUrl, string destinationPath)
         {

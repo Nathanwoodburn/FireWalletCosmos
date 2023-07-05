@@ -71,8 +71,7 @@
             panelLogin.Controls.Add(textBoxPassword);
             panelLogin.Controls.Add(labelPassword);
             panelLogin.Controls.Add(LoginButton);
-            panelLogin.Dock = DockStyle.Fill;
-            panelLogin.Location = new Point(0, 22);
+            panelLogin.Location = new Point(776, 443);
             panelLogin.Name = "panelLogin";
             panelLogin.Size = new Size(784, 428);
             panelLogin.TabIndex = 1;
@@ -95,6 +94,7 @@
             textBoxPassword.Size = new Size(137, 29);
             textBoxPassword.TabIndex = 2;
             textBoxPassword.UseSystemPasswordChar = true;
+            textBoxPassword.KeyDown += textBoxPassword_KeyDown;
             // 
             // labelPassword
             // 

@@ -206,8 +206,6 @@ namespace FireWalletLite
             //req.Headers.Add("Authorization", "Basic " + Convert.ToBase64String(System.Text.ASCIIEncoding.ASCII.GetBytes("x:" + key)));
             req.Content = new StringContent(content);
             // Send request
-
-
             try
             {
                 HttpResponseMessage resp = await httpClient.SendAsync(req);
@@ -237,7 +235,6 @@ namespace FireWalletLite
             string port = "1203";
             if (wallet) port = port + "9";
             else port = port + "7";
-
             try
             {
                 HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, "http://" + ip + ":" + port + "/" + path);
@@ -266,7 +263,6 @@ namespace FireWalletLite
             }
         }
         #endregion
-
         private void MainForm_Load(object sender, EventArgs e)
         {
             LoginButton.Left = (this.ClientSize.Width - LoginButton.Width) / 2;
@@ -292,7 +288,6 @@ namespace FireWalletLite
                 firstLoginForm.Dispose();
             }
         }
-
         private async void Login_Click(object sender, EventArgs e)
         {
             LoginButton.Enabled = false; // To prevent double clicking
@@ -302,17 +297,17 @@ namespace FireWalletLite
             string content = "{\"passphrase\": \"" + Password + "\",\"timeout\": 60}";
 
             string response = await APIPost(path, true, content);
-            if (response.Contains("Could not decrypt"))
+            if (response == "Error")
             {
                 Password = "";
                 NotifyForm notifyForm = new NotifyForm("Incorrect Password");
                 notifyForm.ShowDialog();
                 notifyForm.Dispose();
                 LoginButton.Enabled = true;
+                return;
             }
             panelLogin.Hide();
         }
-
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             // Run taskkill /im "node.exe" /f /t
@@ -322,7 +317,15 @@ namespace FireWalletLite
             startInfo.CreateNoWindow = true;
             Process.Start(startInfo);
             Environment.Exit(0);
+        }
 
+        private void textBoxPassword_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyValue == 13)
+            {
+                Login_Click(sender, e);
+                e.SuppressKeyPress = true;
+            }
         }
     }
 }
