@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -268,7 +269,12 @@ namespace FireWalletLite
 
         private void MainForm_Load(object sender, EventArgs e)
         {
-
+            LoginButton.Left = (this.ClientSize.Width - LoginButton.Width) / 2;
+            int widthOfPassword = textBoxPassword.Width + labelPassword.Width;
+            labelPassword.Left = (this.ClientSize.Width - widthOfPassword) / 2;
+            textBoxPassword.Left = labelPassword.Right;
+            labelWelcome.Left = (this.ClientSize.Width - labelWelcome.Width) / 2;
+            textBoxPassword.Focus();
         }
         private async void TestForLogin()
         {
@@ -285,6 +291,38 @@ namespace FireWalletLite
                 firstLoginForm.ShowDialog();
                 firstLoginForm.Dispose();
             }
+        }
+
+        private async void Login_Click(object sender, EventArgs e)
+        {
+            LoginButton.Enabled = false; // To prevent double clicking
+            Password = textBoxPassword.Text;
+
+            string path = "wallet/" + Account + "/unlock";
+            string content = "{\"passphrase\": \"" + Password + "\",\"timeout\": 60}";
+
+            string response = await APIPost(path, true, content);
+            if (response.Contains("Could not decrypt"))
+            {
+                Password = "";
+                NotifyForm notifyForm = new NotifyForm("Incorrect Password");
+                notifyForm.ShowDialog();
+                notifyForm.Dispose();
+                LoginButton.Enabled = true;
+            }
+            panelLogin.Hide();
+        }
+
+        private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            // Run taskkill /im "node.exe" /f /t
+            ProcessStartInfo startInfo = new ProcessStartInfo();
+            startInfo.FileName = "taskkill.exe";
+            startInfo.Arguments = "/im \"node.exe\" /f /t";
+            startInfo.CreateNoWindow = true;
+            Process.Start(startInfo);
+            Environment.Exit(0);
+
         }
     }
 }

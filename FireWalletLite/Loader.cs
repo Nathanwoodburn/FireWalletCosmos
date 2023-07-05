@@ -8,7 +8,7 @@ namespace FireWalletLite
     public partial class Loader : Form
     {
         #region Constants
-        MainForm mainForm;
+        MainForm mainForm = new MainForm();
         bool hideScreen = false;
         Process HSDProcess;
         #endregion
@@ -16,7 +16,6 @@ namespace FireWalletLite
         public Loader()
         {
             InitializeComponent();
-            mainForm = new MainForm();
 
             SplashScreen splashScreen = new SplashScreen(false);
             splashScreen.Show();
@@ -75,31 +74,10 @@ namespace FireWalletLite
 
         private void Loader_Load(object sender, EventArgs e)
         {
-            this.Hide();
-            mainForm.ShowDialog();
-            // Close HSD
-            if (HSDProcess != null)
-            {
-                try
-                {
-                    HSDProcess.Kill();
-                    Thread.Sleep(1000);
-                }
-                catch
-                {
-                    Environment.Exit(90);
-                }
-                try
-                {
-                    HSDProcess.Dispose();
-                }
-                catch
-                {
-                    Environment.Exit(90);
-                }
-            }
-            Environment.Exit(0);
+            this.ShowInTaskbar = false;
+            this.Opacity = 0;
         }
+
 
         #region Git
         public void CloneRepository(string repositoryUrl, string destinationPath)
