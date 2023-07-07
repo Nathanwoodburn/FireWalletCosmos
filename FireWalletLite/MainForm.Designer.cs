@@ -49,7 +49,6 @@
             groupBoxAccount = new GroupBox();
             labelDomains = new Label();
             labelBalance = new Label();
-            button1 = new Button();
             statusStripMain.SuspendLayout();
             panelLogin.SuspendLayout();
             groupBoxLogin.SuspendLayout();
@@ -148,7 +147,6 @@
             // 
             // panelPortfolio
             // 
-            panelPortfolio.Controls.Add(button1);
             panelPortfolio.Controls.Add(buttonRenew);
             panelPortfolio.Controls.Add(groupBoxDomains);
             panelPortfolio.Controls.Add(panelNav);
@@ -257,16 +255,6 @@
             labelBalance.TabIndex = 0;
             labelBalance.Text = "labelBal";
             // 
-            // button1
-            // 
-            button1.Location = new Point(197, 212);
-            button1.Name = "button1";
-            button1.Size = new Size(75, 23);
-            button1.TabIndex = 4;
-            button1.Text = "buttonTest";
-            button1.UseVisualStyleBackColor = true;
-            button1.Click += button1_Click;
-            // 
             // MainForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -317,6 +305,5 @@
         private Panel panelDomainList;
         private Button buttonRenew;
         private Button buttonSend;
-        private Button button1;
     }
 }

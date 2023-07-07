@@ -33,9 +33,12 @@
             labelInfo = new Label();
             labelName = new Label();
             buttonExplorer = new Button();
-            button1 = new Button();
-            button2 = new Button();
+            buttonRenew = new Button();
+            buttonTransfer = new Button();
             groupBoxManage = new GroupBox();
+            textBoxTransferAddress = new TextBox();
+            buttonCancel = new Button();
+            buttonFinalize = new Button();
             groupBoxInfo.SuspendLayout();
             groupBoxManage.SuspendLayout();
             SuspendLayout();
@@ -82,32 +85,37 @@
             buttonExplorer.UseVisualStyleBackColor = true;
             buttonExplorer.Click += buttonExplorer_Click;
             // 
-            // button1
+            // buttonRenew
             // 
-            button1.FlatStyle = FlatStyle.Flat;
-            button1.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
-            button1.Location = new Point(6, 31);
-            button1.Name = "button1";
-            button1.Size = new Size(89, 30);
-            button1.TabIndex = 1;
-            button1.Text = "Explorer";
-            button1.UseVisualStyleBackColor = true;
+            buttonRenew.FlatStyle = FlatStyle.Flat;
+            buttonRenew.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
+            buttonRenew.Location = new Point(6, 31);
+            buttonRenew.Name = "buttonRenew";
+            buttonRenew.Size = new Size(89, 30);
+            buttonRenew.TabIndex = 1;
+            buttonRenew.Text = "Renew";
+            buttonRenew.UseVisualStyleBackColor = true;
+            buttonRenew.Click += buttonRenew_Click;
             // 
-            // button2
+            // buttonTransfer
             // 
-            button2.FlatStyle = FlatStyle.Flat;
-            button2.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
-            button2.Location = new Point(6, 67);
-            button2.Name = "button2";
-            button2.Size = new Size(89, 30);
-            button2.TabIndex = 1;
-            button2.Text = "Explorer";
-            button2.UseVisualStyleBackColor = true;
+            buttonTransfer.FlatStyle = FlatStyle.Flat;
+            buttonTransfer.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
+            buttonTransfer.Location = new Point(375, 67);
+            buttonTransfer.Name = "buttonTransfer";
+            buttonTransfer.Size = new Size(89, 30);
+            buttonTransfer.TabIndex = 1;
+            buttonTransfer.Text = "Transfer";
+            buttonTransfer.UseVisualStyleBackColor = true;
+            buttonTransfer.Click += buttonTransfer_Click;
             // 
             // groupBoxManage
             // 
-            groupBoxManage.Controls.Add(button1);
-            groupBoxManage.Controls.Add(button2);
+            groupBoxManage.Controls.Add(textBoxTransferAddress);
+            groupBoxManage.Controls.Add(buttonRenew);
+            groupBoxManage.Controls.Add(buttonCancel);
+            groupBoxManage.Controls.Add(buttonFinalize);
+            groupBoxManage.Controls.Add(buttonTransfer);
             groupBoxManage.Font = new Font("Segoe UI", 14F, FontStyle.Regular, GraphicsUnit.Point);
             groupBoxManage.Location = new Point(298, 52);
             groupBoxManage.Name = "groupBoxManage";
@@ -115,6 +123,39 @@
             groupBoxManage.TabIndex = 2;
             groupBoxManage.TabStop = false;
             groupBoxManage.Text = "Manage";
+            // 
+            // textBoxTransferAddress
+            // 
+            textBoxTransferAddress.Location = new Point(6, 66);
+            textBoxTransferAddress.Name = "textBoxTransferAddress";
+            textBoxTransferAddress.Size = new Size(363, 32);
+            textBoxTransferAddress.TabIndex = 2;
+            // 
+            // buttonCancel
+            // 
+            buttonCancel.FlatStyle = FlatStyle.Flat;
+            buttonCancel.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
+            buttonCancel.Location = new Point(6, 67);
+            buttonCancel.Name = "buttonCancel";
+            buttonCancel.Size = new Size(89, 30);
+            buttonCancel.TabIndex = 1;
+            buttonCancel.Text = "Cancel";
+            buttonCancel.UseVisualStyleBackColor = true;
+            buttonCancel.Visible = false;
+            buttonCancel.Click += buttonCancel_Click;
+            // 
+            // buttonFinalize
+            // 
+            buttonFinalize.FlatStyle = FlatStyle.Flat;
+            buttonFinalize.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
+            buttonFinalize.Location = new Point(6, 67);
+            buttonFinalize.Name = "buttonFinalize";
+            buttonFinalize.Size = new Size(89, 30);
+            buttonFinalize.TabIndex = 1;
+            buttonFinalize.Text = "Finalize";
+            buttonFinalize.UseVisualStyleBackColor = true;
+            buttonFinalize.Visible = false;
+            buttonFinalize.Click += buttonFinalize_Click;
             // 
             // DomainForm
             // 
@@ -136,6 +177,7 @@
             groupBoxInfo.ResumeLayout(false);
             groupBoxInfo.PerformLayout();
             groupBoxManage.ResumeLayout(false);
+            groupBoxManage.PerformLayout();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -146,8 +188,11 @@
         private Label labelName;
         private Button buttonExplorer;
         private Label labelInfo;
-        private Button button1;
-        private Button button2;
+        private Button buttonRenew;
+        private Button buttonTransfer;
         private GroupBox groupBoxManage;
+        private TextBox textBoxTransferAddress;
+        private Button buttonFinalize;
+        private Button buttonCancel;
     }
 }

@@ -540,7 +540,7 @@ namespace FireWalletLite
 
         private void button1_Click(object sender, EventArgs e)
         {
-            DomainForm domainForm = new DomainForm(this,"woodburn");
+            DomainForm domainForm = new DomainForm(this, "woodburn");
             domainForm.ShowDialog();
             domainForm.Dispose();
         }

@@ -8,6 +8,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using DnsClient;
+using FireWallet;
 using Newtonsoft.Json.Linq;
 
 namespace FireWalletLite
@@ -76,6 +78,18 @@ namespace FireWalletLite
                             if (info["transfer"].ToString() != "0")
                             {
                                 labelInfo.Text += "Transferring\n";
+                                int TransferEnd = Convert.ToInt32(stats["transferLockupEnd"].ToString());
+                                textBoxTransferAddress.Hide();
+                                buttonTransfer.Hide();
+                                if (height >= TransferEnd)
+                                {
+                                    buttonFinalize.Show();
+                                }
+                                else
+                                {
+                                    labelInfo.Text += "Finalize in " + (TransferEnd - height).ToString() + " blocks\n";
+                                    buttonCancel.Show();
+                                }
                             }
 
                             if (state == "CLOSED")
@@ -120,7 +134,172 @@ namespace FireWalletLite
             GetName();
         }
 
+        private async void buttonRenew_Click(object sender, EventArgs e)
+        {
+            string content = "{\"method\": \"renew\", \"params\": [\"" + domain + "\"]}";
+            string response = await main.APIPost("", true, content);
+            if (response == "Error")
+            {
+                NotifyForm notify = new NotifyForm("Error renewing domain");
+                notify.ShowDialog();
+                notify.Dispose();
+                return;
+            }
+            JObject jObject = JObject.Parse(response);
+            if (jObject.ContainsKey("result"))
+            {
+                main.AddLog(jObject["result"].ToString());
+                JObject result = (JObject)jObject["result"];
+                if (result.ContainsKey("txid"))
+                {
+                    string txid = result["txid"].ToString();
+                    NotifyForm notify = new NotifyForm("Renewed domain", "Explorer", main.TXExplorer + txid);
+                    notify.ShowDialog();
+                    notify.Dispose();
+                }
+                else
+                {
+                    NotifyForm notify = new NotifyForm("Error renewing domain");
+                    notify.ShowDialog();
+                    notify.Dispose();
+                }
+            }
+            else
+            {
+                NotifyForm notify = new NotifyForm("Error renewing domain");
+                notify.ShowDialog();
+                notify.Dispose();
+                main.AddLog(jObject.ToString());
+            }
+        }
+
+        private async void buttonTransfer_Click(object sender, EventArgs e)
+        {
+            string address = textBoxTransferAddress.Text;
+            bool valid = await main.ValidAddress(address);
+            if (!valid)
+            {
+                NotifyForm notify = new NotifyForm("Invalid address");
+                notify.ShowDialog();
+                notify.Dispose();
+                return;
+            }
+            string content = "{\"method\": \"transfer\", \"params\": [\"" + domain + "\", \"" + address + "\"]}";
+            string response = await main.APIPost("", true, content);
+            if (response == "Error")
+            {
+                NotifyForm notify = new NotifyForm("Error transferring domain");
+                notify.ShowDialog();
+                notify.Dispose();
+                return;
+            }
+            JObject jObject = JObject.Parse(response);
+            if (jObject.ContainsKey("result"))
+            {
+                main.AddLog(jObject["result"].ToString());
+                JObject result = (JObject)jObject["result"];
+                if (result.ContainsKey("txid"))
+                {
+                    string txid = result["txid"].ToString();
+                    NotifyForm notify = new NotifyForm("Renewed domain", "Explorer", main.TXExplorer + txid);
+                    notify.ShowDialog();
+                    notify.Dispose();
+                }
+                else
+                {
+                    NotifyForm notify = new NotifyForm("Error renewing domain");
+                    notify.ShowDialog();
+                    notify.Dispose();
+                }
+            }
+            else
+            {
+                NotifyForm notify = new NotifyForm("Error renewing domain");
+                notify.ShowDialog();
+                notify.Dispose();
+                main.AddLog(jObject.ToString());
+            }
+        }
+
+        private void buttonFinalize_Click(object sender, EventArgs e)
+        {
+            string content = "{\"method\": \"finalize\", \"params\": [\"" + domain + "\"]}";
+            string response = main.APIPost("", true, content).Result;
+            if (response == "Error")
+            {
+                NotifyForm notify = new NotifyForm("Error finalizing tranfer");
+                notify.ShowDialog();
+                notify.Dispose();
+                return;
+            }
+            JObject jObject = JObject.Parse(response);
+            if (jObject.ContainsKey("result"))
+            {
+                main.AddLog(jObject["result"].ToString());
+                JObject result = (JObject)jObject["result"];
+                if (result.ContainsKey("txid"))
+                {
+                    string txid = result["txid"].ToString();
+                    NotifyForm notify = new NotifyForm("Finalized tranfer", "Explorer", main.TXExplorer + txid);
+                    notify.ShowDialog();
+                    notify.Dispose();
+                }
+                else
+                {
+                    NotifyForm notify = new NotifyForm("Error finalizing tranfer");
+                    notify.ShowDialog();
+                    notify.Dispose();
+                }
+            }
+            else
+            {
+                NotifyForm notify = new NotifyForm("Error finalizing tranfer");
+                notify.ShowDialog();
+                notify.Dispose();
+                main.AddLog(jObject.ToString());
+            }
+        }
+        private void buttonCancel_Click(object sender, EventArgs e)
+        {
+            string content = "{\"method\": \"cancel\", \"params\": [\"" + domain + "\"]}";
+            string response = main.APIPost("", true, content).Result;
+            if (response == "Error")
+            {
+                NotifyForm notify = new NotifyForm("Error cancelling tranfer");
+                notify.ShowDialog();
+                notify.Dispose();
+                return;
+            }
+            JObject jObject = JObject.Parse(response);
+            if (jObject.ContainsKey("result"))
+            {
+                main.AddLog(jObject["result"].ToString());
+                JObject result = (JObject)jObject["result"];
+                if (result.ContainsKey("txid"))
+                {
+                    string txid = result["txid"].ToString();
+                    NotifyForm notify = new NotifyForm("Cancelled tranfer", "Explorer", main.TXExplorer + txid);
+                    notify.ShowDialog();
+                    notify.Dispose();
+                }
+                else
+                {
+                    NotifyForm notify = new NotifyForm("Error cancelling tranfer");
+                    notify.ShowDialog();
+                    notify.Dispose();
+                }
+            }
+            else
+            {
+                NotifyForm notify = new NotifyForm("Error cancelling tranfer");
+                notify.ShowDialog();
+                notify.Dispose();
+                main.AddLog(jObject.ToString());
+            }
+        }
+
         /*
+        // Get DNS records for domain. Not implemented yet
         private async void GetDNS()
         {
             // Get DNS records
