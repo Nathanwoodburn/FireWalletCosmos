@@ -17,6 +17,7 @@ namespace FireWalletLite
     {
         #region Variables
         public string dir = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\FireWalletLite\\";
+        public int daysToExpire = 90; // How many days to check for domain exiries. If domain will expire in less than this, prompt user to renew.
         public Dictionary<string, string> Theme { get; set; }
         HttpClient httpClient = new HttpClient();
         Decimal Balance { get; set; }
@@ -190,6 +191,11 @@ namespace FireWalletLite
             available = decimal.Round(available, 2);
             locked = decimal.Round(locked, 2);
             Balance = available;
+            labelBalance.Text = "Balance: " + available;
+
+            // Get domain count
+            UpdateDomains();
+
         }
         public async Task<string> APIPost(string path, bool wallet, string content)
         {
@@ -262,14 +268,126 @@ namespace FireWalletLite
                 return "Error";
             }
         }
+        public string[] Domains { get; set; }
+        public string[] DomainsRenewable { get; set; }
+        private async void UpdateDomains()
+        {
+            string response = await APIGet("wallet/" + Account + "/name?own=true", true);
+
+            try
+            {
+                JArray names = JArray.Parse(response);
+                Domains = new string[names.Count];
+                DomainsRenewable = new string[names.Count];
+                int i = 0;
+                int renewable = 0;
+                // Sort by Alphabetic order
+                names = new JArray(names.OrderBy(obj => (string)obj["name"]));
+                panelDomainList.Controls.Clear();
+
+                // If no domains, add label and return
+                if (names.Count == 0)
+                {
+                    Label noDomainsLabel = new Label();
+                    noDomainsLabel.Text = "No domains yet.\nPlease note domain transfers take at least 2 days";
+                    noDomainsLabel.TextAlign = ContentAlignment.MiddleCenter;
+                    noDomainsLabel.AutoSize = true;
+                    panelDomainList.Controls.Add(noDomainsLabel);
+                    noDomainsLabel.Left = panelDomainList.Width / 2 - noDomainsLabel.Width / 2;
+                    noDomainsLabel.Top = 10;
+                    return;
+                }
+
+                foreach (JObject name in names)
+                {
+                    Domains[i] = name["name"].ToString();
+                    Panel domainTMP = new Panel();
+                    domainTMP.Width = panelDomainList.Width - 20 - SystemInformation.VerticalScrollBarWidth;
+                    domainTMP.Height = 30;
+                    domainTMP.Top = 30 * (i);
+                    domainTMP.Left = 10;
+                    domainTMP.BorderStyle = BorderStyle.FixedSingle;
+
+                    Label domainName = new Label();
+                    domainName.Text = Domains[i];
+                    domainName.Top = 5;
+                    domainName.Left = 5;
+                    domainName.AutoSize = true;
+                    domainTMP.Controls.Add(domainName);
+
+                    if (!name.ContainsKey("stats"))
+                    {
+                        AddLog("Domain " + Domains[i] + " does not have stats");
+                        continue;
+                    }
+                    Label expiry = new Label();
+                    JObject stats = JObject.Parse(name["stats"].ToString());
+                    if (stats.ContainsKey("daysUntilExpire"))
+                    {
+                        expiry.Text = "Expires: " + stats["daysUntilExpire"].ToString() + " days";
+                        expiry.Top = 5;
+                        expiry.AutoSize = true;
+                        expiry.Left = domainTMP.Width - expiry.Width - 100;
+                        domainTMP.Controls.Add(expiry);
+
+                        // Add to domains renewable if less than set days
+                        decimal days = decimal.Parse(stats["daysUntilExpire"].ToString());
+                        if (days <= daysToExpire)
+                        {
+                            DomainsRenewable[renewable] = Domains[i];
+                            renewable++;
+                        }
+                    }
+                    else
+                    {
+                        expiry.Text = "Expires: Not Registered yet";
+                        expiry.Top = 5;
+                        expiry.AutoSize = true;
+                        expiry.Left = domainTMP.Width - expiry.Width - 100;
+                        domainTMP.Controls.Add(expiry);
+                    }
+
+                    /*
+                    // On Click open domain
+                    domainTMP.Click += new EventHandler((sender, e) =>
+                    {
+                        DomainForm domainForm = new DomainForm(this, name["name"].ToString(), UserSettings["explorer-tx"], UserSettings["explorer-domain"]);
+                        domainForm.Show();
+                    });
+
+
+                    foreach (Control c in domainTMP.Controls)
+                    {
+                        c.Click += new EventHandler((sender, e) =>
+                        {
+                            DomainForm domainForm = new DomainForm(this, name["name"].ToString(), UserSettings["explorer-tx"], UserSettings["explorer-domain"]);
+                            domainForm.Show();
+                        });
+                    }
+                    */
+                    panelDomainList.Controls.Add(domainTMP);
+
+                    i++;
+                }
+                labelDomains.Text = "Domains: " + names.Count;
+
+                if (renewable > 0)
+                {
+                    buttonRenew.Text = "Renew " + renewable + " domains";
+                    buttonRenew.Enabled = true;
+                }
+            }
+            catch (Exception ex)
+            {
+                AddLog("Error getting domains");
+                AddLog(ex.Message);
+            }
+        }
         #endregion
         private void MainForm_Load(object sender, EventArgs e)
         {
-            LoginButton.Left = (this.ClientSize.Width - LoginButton.Width) / 2;
-            int widthOfPassword = textBoxPassword.Width + labelPassword.Width;
-            labelPassword.Left = (this.ClientSize.Width - widthOfPassword) / 2;
-            textBoxPassword.Left = labelPassword.Right;
-            labelWelcome.Left = (this.ClientSize.Width - labelWelcome.Width) / 2;
+            groupBoxLogin.Left = (this.ClientSize.Width - groupBoxLogin.Width) / 2;
+            groupBoxLogin.Top = (this.ClientSize.Height - groupBoxLogin.Height) / 2;
             textBoxPassword.Focus();
         }
         private async void TestForLogin()
@@ -306,7 +424,12 @@ namespace FireWalletLite
                 LoginButton.Enabled = true;
                 return;
             }
+            groupBoxDomains.Width = this.Width - groupBoxDomains.Left - 20;
+            await UpdateBalance();
             panelLogin.Hide();
+            panelNav.Dock = DockStyle.Left;
+            panelPortfolio.Show();
+
         }
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
@@ -326,6 +449,26 @@ namespace FireWalletLite
                 Login_Click(sender, e);
                 e.SuppressKeyPress = true;
             }
+        }
+
+        private async void buttonReceive_Click(object sender, EventArgs e)
+        {
+            string path = "wallet/" + Account + "/address";
+            string content = "{\"account\": \"default\"}";
+            string response = await APIPost(path, true, content);
+            if (response == "Error")
+            {
+                NotifyForm notifyForm = new NotifyForm("Error getting address");
+                notifyForm.ShowDialog();
+                notifyForm.Dispose();
+                return;
+            }
+            JObject resp = JObject.Parse(response);
+            string address = resp["address"].ToString();
+
+            ReceiveForm receiveForm = new ReceiveForm(address, this);
+            receiveForm.ShowDialog();
+            receiveForm.Dispose();
         }
     }
 }
