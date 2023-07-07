@@ -53,7 +53,6 @@ namespace FireWalletLite
                 labelInfo.Text = "";
                 if (jObject.ContainsKey("result"))
                 {
-                    main.AddLog(jObject.ToString());
                     JObject result = (JObject)jObject["result"];
                     JObject start = (JObject)result["start"];
                     if (start["reserved"].ToString().ToLower() == "true") labelInfo.Text = "Reserved for ICANN domain owner\n";
@@ -91,7 +90,7 @@ namespace FireWalletLite
 
 
                             // Get DNS if the domain isn't in auction
-                            //if (state == "CLOSED") GetDNS();
+                            if (state == "CLOSED") GetDNS();
 
 
                         }
@@ -288,13 +287,13 @@ namespace FireWalletLite
             }
         }
 
-        /*
+
         // Get DNS records for domain. Not implemented yet
         private async void GetDNS()
         {
             // Get DNS records
             string contentDNS = "{\"method\": \"getnameresource\", \"params\": [\"" + domain + "\"]}";
-            string responseDNS = await APIPost("", false, contentDNS);
+            string responseDNS = await main.APIPost("", false, contentDNS);
             JObject jObjectDNS = JObject.Parse(responseDNS);
 
             if (jObjectDNS["result"].ToString() == "")
@@ -388,7 +387,6 @@ namespace FireWalletLite
                 panelDNS.Controls.Add(DNSPanel);
                 i++;
             }
-            panelDNS.AutoScroll = true;
-        }*/
+        }
     }
 }

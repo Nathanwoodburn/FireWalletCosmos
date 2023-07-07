@@ -39,8 +39,11 @@
             textBoxTransferAddress = new TextBox();
             buttonCancel = new Button();
             buttonFinalize = new Button();
+            groupBoxDNS = new GroupBox();
+            panelDNS = new Panel();
             groupBoxInfo.SuspendLayout();
             groupBoxManage.SuspendLayout();
+            groupBoxDNS.SuspendLayout();
             SuspendLayout();
             // 
             // groupBoxInfo
@@ -157,11 +160,31 @@
             buttonFinalize.Visible = false;
             buttonFinalize.Click += buttonFinalize_Click;
             // 
+            // groupBoxDNS
+            // 
+            groupBoxDNS.Controls.Add(panelDNS);
+            groupBoxDNS.Location = new Point(12, 221);
+            groupBoxDNS.Name = "groupBoxDNS";
+            groupBoxDNS.Size = new Size(756, 224);
+            groupBoxDNS.TabIndex = 3;
+            groupBoxDNS.TabStop = false;
+            groupBoxDNS.Text = "DNS";
+            // 
+            // panelDNS
+            // 
+            panelDNS.AutoSize = true;
+            panelDNS.Dock = DockStyle.Fill;
+            panelDNS.Location = new Point(3, 19);
+            panelDNS.Name = "panelDNS";
+            panelDNS.Size = new Size(750, 202);
+            panelDNS.TabIndex = 0;
+            // 
             // DomainForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(780, 457);
+            Controls.Add(groupBoxDNS);
             Controls.Add(groupBoxManage);
             Controls.Add(buttonExplorer);
             Controls.Add(labelName);
@@ -178,6 +201,8 @@
             groupBoxInfo.PerformLayout();
             groupBoxManage.ResumeLayout(false);
             groupBoxManage.PerformLayout();
+            groupBoxDNS.ResumeLayout(false);
+            groupBoxDNS.PerformLayout();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -194,5 +219,7 @@
         private TextBox textBoxTransferAddress;
         private Button buttonFinalize;
         private Button buttonCancel;
+        private GroupBox groupBoxDNS;
+        private Panel panelDNS;
     }
 }
