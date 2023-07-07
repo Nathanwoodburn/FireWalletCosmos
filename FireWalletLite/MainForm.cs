@@ -481,7 +481,7 @@ namespace FireWalletLite
             // Some UI stuff
             groupBoxAccount.Top = statusStripMain.Height + 10;
             groupBoxDomains.Top = statusStripMain.Height + 10;
-            groupBoxDomains.Height = this.Height - groupBoxDomains.Top - 20;
+            groupBoxDomains.Height = this.Height - groupBoxDomains.Top - 40;
             buttonReceive.Top = statusStripMain.Height + 10;
             buttonSend.Top = buttonReceive.Top + buttonReceive.Height + 10;
             buttonRenew.Top = groupBoxAccount.Top + groupBoxAccount.Height + 10;
