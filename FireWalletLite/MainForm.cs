@@ -5,6 +5,7 @@ using System.Data;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -18,6 +19,7 @@ namespace FireWalletLite
         #region Variables
         public string dir = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\FireWalletLite\\";
         public int daysToExpire = 90; // How many days to check for domain exiries. If domain will expire in less than this, prompt user to renew.
+        public string TXExplorer = "https://niami.io/tx/"; // Transaction explorer URL
         public Dictionary<string, string> Theme { get; set; }
         HttpClient httpClient = new HttpClient();
         Decimal Balance { get; set; }
@@ -469,6 +471,130 @@ namespace FireWalletLite
             ReceiveForm receiveForm = new ReceiveForm(address, this);
             receiveForm.ShowDialog();
             receiveForm.Dispose();
+        }
+
+        private void buttonSend_Click(object sender, EventArgs e)
+        {
+            SendForm sendForm = new SendForm(Balance, this);
+            sendForm.ShowDialog();
+            sendForm.Dispose();
+        }
+
+        private async void buttonRenew_Click(object sender, EventArgs e)
+        {
+            Batch[] batches = new Batch[DomainsRenewable.Length];
+            for (int i = 0; i < DomainsRenewable.Length; i++)
+            {
+                batches[i] = new Batch(DomainsRenewable[i], "RENEW");
+            }
+
+            string batchTX = "[" + string.Join(", ", batches.Select(batch => batch.ToString())) + "]";
+            string content = "{\"method\": \"sendbatch\",\"params\":[ " + batchTX + "]}";
+            string response = await APIPost("", true, content);
+
+            if (response == "Error")
+            {
+                AddLog("Error sending renewals");
+                NotifyForm notifyForm = new NotifyForm("Error sending renewals");
+                notifyForm.ShowDialog();
+                notifyForm.Dispose();
+                return;
+            }
+
+            JObject jObject = JObject.Parse(response);
+            if (jObject["error"].ToString() != "")
+            {
+                AddLog("Error: ");
+                AddLog(jObject["error"].ToString());
+                if (jObject["error"].ToString().Contains("Batch output addresses would exceed lookahead"))
+                {
+                    NotifyForm notifyForm = new NotifyForm("Error: \nBatch output addresses would exceed lookahead\nYour batch might have too many TXs.");
+                    notifyForm.ShowDialog();
+                    notifyForm.Dispose();
+                }
+                else
+                {
+                    NotifyForm notifyForm = new NotifyForm("Error: \n" + jObject["error"].ToString());
+                    notifyForm.ShowDialog();
+                    notifyForm.Dispose();
+                }
+                return;
+            }
+
+            JObject result = JObject.Parse(jObject["result"].ToString());
+            string hash = result["hash"].ToString();
+            AddLog("Batch sent with hash: " + hash);
+            NotifyForm notifyForm2 = new NotifyForm("Renewals sent\nThis might take a while to mine.", "Explorer", TXExplorer + hash);
+            notifyForm2.ShowDialog();
+            notifyForm2.Dispose();
+        }
+    }
+    public class Batch
+    {
+        public string domain { get; }
+        public string method { get; }
+        public decimal bid { get; }
+        public decimal lockup { get; }
+        public string toAddress { get; }
+        //public DNS[]? update { get; }
+        public Batch(string domain, string method) // Normal TXs
+        {
+            this.domain = domain;
+            this.method = method;
+            bid = 0;
+            lockup = 0;
+            toAddress = "";
+            //update = null;
+        }
+        public Batch(string domain, string method, string toAddress) // Transfers
+        {
+            this.domain = domain;
+            this.method = method;
+            this.toAddress = toAddress;
+            bid = 0;
+            lockup = 0;
+            //update = null;
+        }
+        public Batch(string domain, string method, decimal bid, decimal lockup) // Bids
+        {
+            this.domain = domain;
+            this.method = method;
+            this.bid = bid;
+            this.lockup = lockup;
+            toAddress = "";
+            //update = null;
+        }
+        // DNS Update not implemented yet
+        /*
+        public Batch(string domain, string method, DNS[] update) // DNS Update
+        {
+            this.domain = domain;
+            this.method = method;
+            this.update = update;
+
+        }*/
+        public override string ToString()
+        {
+            if (method == "BID")
+            {
+                return "[\"BID\", \"" + domain + "\", " + bid + ", " + lockup + "]";
+            }
+            else if (method == "TRANSFER")
+            {
+                return "[\"TRANSFER\", \"" + domain + "\", \"" + toAddress + "\"]";
+            }
+            /*else if (method == "UPDATE" && update != null)
+            {
+
+                string records = "{\"records\":[" + string.Join(", ", update.Select(record => record.ToString())) + "]}";
+                return "[\"UPDATE\", \"" + domain + "\", " + records + "]";
+
+            }
+            else if (method == "UPDATE")
+            {
+                return "[\"UPDATE\", \"" + domain + "\", {\"records\":[]}]";
+            }*/
+            return "[\"" + method + "\", \"" + domain + "\"]";
         }
     }
 }

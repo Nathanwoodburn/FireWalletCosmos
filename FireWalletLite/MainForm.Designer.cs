@@ -40,14 +40,15 @@
             labelPassword = new Label();
             LoginButton = new Button();
             panelPortfolio = new Panel();
+            buttonRenew = new Button();
             groupBoxDomains = new GroupBox();
             panelDomainList = new Panel();
             panelNav = new Panel();
+            buttonSend = new Button();
             buttonReceive = new Button();
             groupBoxAccount = new GroupBox();
             labelDomains = new Label();
             labelBalance = new Label();
-            buttonRenew = new Button();
             statusStripMain.SuspendLayout();
             panelLogin.SuspendLayout();
             groupBoxLogin.SuspendLayout();
@@ -156,6 +157,19 @@
             panelPortfolio.TabIndex = 2;
             panelPortfolio.Visible = false;
             // 
+            // buttonRenew
+            // 
+            buttonRenew.Enabled = false;
+            buttonRenew.FlatStyle = FlatStyle.Flat;
+            buttonRenew.Font = new Font("Segoe UI", 14F, FontStyle.Regular, GraphicsUnit.Point);
+            buttonRenew.Location = new Point(102, 117);
+            buttonRenew.Name = "buttonRenew";
+            buttonRenew.Size = new Size(299, 49);
+            buttonRenew.TabIndex = 3;
+            buttonRenew.Text = "Renew 0 domains";
+            buttonRenew.UseVisualStyleBackColor = true;
+            buttonRenew.Click += buttonRenew_Click;
+            // 
             // groupBoxDomains
             // 
             groupBoxDomains.Controls.Add(panelDomainList);
@@ -179,12 +193,25 @@
             // 
             // panelNav
             // 
+            panelNav.Controls.Add(buttonSend);
             panelNav.Controls.Add(buttonReceive);
             panelNav.Dock = DockStyle.Left;
             panelNav.Location = new Point(0, 0);
             panelNav.Name = "panelNav";
             panelNav.Size = new Size(96, 529);
             panelNav.TabIndex = 1;
+            // 
+            // buttonSend
+            // 
+            buttonSend.FlatStyle = FlatStyle.Flat;
+            buttonSend.Font = new Font("Segoe UI", 14F, FontStyle.Regular, GraphicsUnit.Point);
+            buttonSend.Location = new Point(3, 45);
+            buttonSend.Name = "buttonSend";
+            buttonSend.Size = new Size(90, 36);
+            buttonSend.TabIndex = 1;
+            buttonSend.Text = "Send";
+            buttonSend.UseVisualStyleBackColor = true;
+            buttonSend.Click += buttonSend_Click;
             // 
             // buttonReceive
             // 
@@ -227,18 +254,6 @@
             labelBalance.Size = new Size(79, 25);
             labelBalance.TabIndex = 0;
             labelBalance.Text = "labelBal";
-            // 
-            // buttonRenew
-            // 
-            buttonRenew.Enabled = false;
-            buttonRenew.FlatStyle = FlatStyle.Flat;
-            buttonRenew.Font = new Font("Segoe UI", 14F, FontStyle.Regular, GraphicsUnit.Point);
-            buttonRenew.Location = new Point(102, 117);
-            buttonRenew.Name = "buttonRenew";
-            buttonRenew.Size = new Size(299, 49);
-            buttonRenew.TabIndex = 3;
-            buttonRenew.Text = "Renew 0 domains";
-            buttonRenew.UseVisualStyleBackColor = true;
             // 
             // MainForm
             // 
@@ -289,5 +304,6 @@
         private GroupBox groupBoxDomains;
         private Panel panelDomainList;
         private Button buttonRenew;
+        private Button buttonSend;
     }
 }
