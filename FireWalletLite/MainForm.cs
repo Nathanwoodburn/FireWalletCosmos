@@ -1,22 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
+﻿using System.Data;
 using System.Diagnostics;
-using System.Drawing;
-using System.Linq;
-using System.Net;
-using System.Net.Security;
-using System.Security.Cryptography.X509Certificates;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 using FireWallet;
 using Newtonsoft.Json.Linq;
-using DnsClient;
-using DnsClient.Protocol;
-using System.Security.Policy;
 
 namespace FireWalletLite
 {
@@ -536,13 +521,6 @@ namespace FireWalletLite
             NotifyForm notifyForm2 = new NotifyForm("Renewals sent\nThis might take a while to mine.", "Explorer", TXExplorer + hash);
             notifyForm2.ShowDialog();
             notifyForm2.Dispose();
-        }
-
-        private void button1_Click(object sender, EventArgs e)
-        {
-            DomainForm domainForm = new DomainForm(this, "woodburn");
-            domainForm.ShowDialog();
-            domainForm.Dispose();
         }
     }
     public class Batch
