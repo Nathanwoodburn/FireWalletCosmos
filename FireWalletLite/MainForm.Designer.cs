@@ -34,6 +34,7 @@
             SyncLabel = new ToolStripStatusLabel();
             timerUpdate = new System.Windows.Forms.Timer(components);
             panelLogin = new Panel();
+            pictureBoxLogo = new PictureBox();
             groupBoxLogin = new GroupBox();
             labelWelcome = new Label();
             textBoxPassword = new TextBox();
@@ -49,8 +50,10 @@
             groupBoxAccount = new GroupBox();
             labelDomains = new Label();
             labelBalance = new Label();
+            LabelSyncWarning = new ToolStripStatusLabel();
             statusStripMain.SuspendLayout();
             panelLogin.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBoxLogo).BeginInit();
             groupBoxLogin.SuspendLayout();
             panelPortfolio.SuspendLayout();
             groupBoxDomains.SuspendLayout();
@@ -61,7 +64,7 @@
             // statusStripMain
             // 
             statusStripMain.Dock = DockStyle.Top;
-            statusStripMain.Items.AddRange(new ToolStripItem[] { SyncLabel });
+            statusStripMain.Items.AddRange(new ToolStripItem[] { SyncLabel, LabelSyncWarning });
             statusStripMain.Location = new Point(0, 0);
             statusStripMain.Name = "statusStripMain";
             statusStripMain.Size = new Size(1099, 22);
@@ -83,11 +86,22 @@
             // 
             // panelLogin
             // 
+            panelLogin.Controls.Add(pictureBoxLogo);
             panelLogin.Controls.Add(groupBoxLogin);
-            panelLogin.Location = new Point(1081, 556);
+            panelLogin.Location = new Point(12, 40);
             panelLogin.Name = "panelLogin";
             panelLogin.Size = new Size(1099, 558);
             panelLogin.TabIndex = 1;
+            // 
+            // pictureBoxLogo
+            // 
+            pictureBoxLogo.Image = (Image)resources.GetObject("pictureBoxLogo.Image");
+            pictureBoxLogo.Location = new Point(453, 20);
+            pictureBoxLogo.Name = "pictureBoxLogo";
+            pictureBoxLogo.Size = new Size(130, 98);
+            pictureBoxLogo.SizeMode = PictureBoxSizeMode.Zoom;
+            pictureBoxLogo.TabIndex = 5;
+            pictureBoxLogo.TabStop = false;
             // 
             // groupBoxLogin
             // 
@@ -151,7 +165,7 @@
             panelPortfolio.Controls.Add(groupBoxDomains);
             panelPortfolio.Controls.Add(panelNav);
             panelPortfolio.Controls.Add(groupBoxAccount);
-            panelPortfolio.Location = new Point(0, 22);
+            panelPortfolio.Location = new Point(1041, 468);
             panelPortfolio.Name = "panelPortfolio";
             panelPortfolio.Size = new Size(1052, 529);
             panelPortfolio.TabIndex = 2;
@@ -255,6 +269,13 @@
             labelBalance.TabIndex = 0;
             labelBalance.Text = "labelBal";
             // 
+            // LabelSyncWarning
+            // 
+            LabelSyncWarning.Name = "LabelSyncWarning";
+            LabelSyncWarning.Size = new Size(443, 17);
+            LabelSyncWarning.Text = "Please wait for node to sync. Account info could be incorrect while node is behind.";
+            LabelSyncWarning.Visible = false;
+            // 
             // MainForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -273,6 +294,7 @@
             statusStripMain.ResumeLayout(false);
             statusStripMain.PerformLayout();
             panelLogin.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)pictureBoxLogo).EndInit();
             groupBoxLogin.ResumeLayout(false);
             groupBoxLogin.PerformLayout();
             panelPortfolio.ResumeLayout(false);
@@ -305,5 +327,7 @@
         private Panel panelDomainList;
         private Button buttonRenew;
         private Button buttonSend;
+        private PictureBox pictureBoxLogo;
+        private ToolStripStatusLabel LabelSyncWarning;
     }
 }

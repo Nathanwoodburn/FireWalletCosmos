@@ -160,6 +160,9 @@ namespace FireWalletLite
                 JObject chain = JObject.Parse(resp["chain"].ToString());
                 decimal progress = Convert.ToDecimal(chain["progress"].ToString());
                 SyncLabel.Text = "Sync: " + decimal.Round(progress * 100, 2) + "%";
+
+                if (progress < 1) LabelSyncWarning.Visible = true;
+                else LabelSyncWarning.Visible = false;
             }
 
             // Try to keep wallet unlocked
@@ -385,6 +388,13 @@ namespace FireWalletLite
         {
             groupBoxLogin.Left = (this.ClientSize.Width - groupBoxLogin.Width) / 2;
             groupBoxLogin.Top = (this.ClientSize.Height - groupBoxLogin.Height) / 2;
+
+            pictureBoxLogo.Height = groupBoxLogin.Top - 20;
+            pictureBoxLogo.Width = pictureBoxLogo.Height;
+            pictureBoxLogo.Top = 10;
+            pictureBoxLogo.Left = (this.ClientSize.Width - pictureBoxLogo.Width) / 2;
+
+
             textBoxPassword.Focus();
         }
         private async void TestForLogin()
