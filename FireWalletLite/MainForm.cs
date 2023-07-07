@@ -37,6 +37,7 @@ namespace FireWalletLite
         {
             InitializeComponent();
             UpdateTheme();
+            this.Text = Application.ProductName;
         }
         #region Theming
         private void UpdateTheme()
@@ -363,25 +364,21 @@ namespace FireWalletLite
                         domainTMP.Controls.Add(expiry);
                     }
                     // On Click open domain
-                    /*
+
                     domainTMP.Click += new EventHandler((sender, e) =>
                     {
-                        DomainForm domainForm = new DomainForm(this, name["name"].ToString(), UserSettings["explorer-tx"], UserSettings["explorer-domain"]);
+                        DomainForm domainForm = new DomainForm(this, name["name"].ToString());
                         domainForm.Show();
                     });
-
-
                     foreach (Control c in domainTMP.Controls)
                     {
                         c.Click += new EventHandler((sender, e) =>
                         {
-                            DomainForm domainForm = new DomainForm(this, name["name"].ToString(), UserSettings["explorer-tx"], UserSettings["explorer-domain"]);
+                            DomainForm domainForm = new DomainForm(this, name["name"].ToString());
                             domainForm.Show();
                         });
                     }
-                    */
                     panelDomainList.Controls.Add(domainTMP);
-
                     i++;
                 }
                 labelDomains.Text = "Domains: " + names.Count;
@@ -539,6 +536,13 @@ namespace FireWalletLite
             NotifyForm notifyForm2 = new NotifyForm("Renewals sent\nThis might take a while to mine.", "Explorer", TXExplorer + hash);
             notifyForm2.ShowDialog();
             notifyForm2.Dispose();
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            DomainForm domainForm = new DomainForm(this,"woodburn");
+            domainForm.ShowDialog();
+            domainForm.Dispose();
         }
     }
     public class Batch

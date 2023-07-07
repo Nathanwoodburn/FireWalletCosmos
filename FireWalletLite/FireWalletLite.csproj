@@ -7,6 +7,9 @@
     <UseWindowsForms>true</UseWindowsForms>
     <ImplicitUsings>enable</ImplicitUsings>
     <ApplicationIcon>favicon.ico</ApplicationIcon>
+    <Title>FireWallet Lite</Title>
+    <Authors>Nathan.Woodburn/</Authors>
+    <Product>FireWallet Lite</Product>
   </PropertyGroup>
 
   <ItemGroup>
