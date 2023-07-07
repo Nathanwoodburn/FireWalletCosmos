@@ -6,11 +6,17 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Net;
+using System.Net.Security;
+using System.Security.Cryptography.X509Certificates;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using FireWallet;
 using Newtonsoft.Json.Linq;
+using DnsClient;
+using DnsClient.Protocol;
+using System.Security.Policy;
 
 namespace FireWalletLite
 {
@@ -20,6 +26,7 @@ namespace FireWalletLite
         public string dir = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\FireWalletLite\\";
         public int daysToExpire = 90; // How many days to check for domain exiries. If domain will expire in less than this, prompt user to renew.
         public string TXExplorer = "https://niami.io/tx/"; // Transaction explorer URL
+        public string DomainExplorer = "https://niami.io/domain/"; // Domain explorer URL        
         public Dictionary<string, string> Theme { get; set; }
         HttpClient httpClient = new HttpClient();
         Decimal Balance { get; set; }
@@ -193,7 +200,7 @@ namespace FireWalletLite
             available = decimal.Round(available, 2);
             locked = decimal.Round(locked, 2);
             Balance = available;
-            labelBalance.Text = "Balance: " + available;
+            labelBalance.Text = "Balance: " + available + " HNS";
 
             // Get domain count
             UpdateDomains();
@@ -270,6 +277,14 @@ namespace FireWalletLite
                 return "Error";
             }
         }
+        public async Task<bool> ValidAddress(string address)
+        {
+            string output = await APIPost("", false, "{\"method\": \"validateaddress\",\"params\": [ \"" + address + "\" ]}");
+            JObject APIresp = JObject.Parse(output);
+            JObject result = JObject.Parse(APIresp["result"].ToString());
+            if (result["isvalid"].ToString() == "True") return true;
+            else return false;
+        }
         public string[] Domains { get; set; }
         public string[] DomainsRenewable { get; set; }
         private async void UpdateDomains()
@@ -297,7 +312,6 @@ namespace FireWalletLite
                     panelDomainList.Controls.Add(noDomainsLabel);
                     noDomainsLabel.Left = panelDomainList.Width / 2 - noDomainsLabel.Width / 2;
                     noDomainsLabel.Top = 10;
-                    return;
                 }
 
                 foreach (JObject name in names)
@@ -348,9 +362,8 @@ namespace FireWalletLite
                         expiry.Left = domainTMP.Width - expiry.Width - 100;
                         domainTMP.Controls.Add(expiry);
                     }
-
-                    /*
                     // On Click open domain
+                    /*
                     domainTMP.Click += new EventHandler((sender, e) =>
                     {
                         DomainForm domainForm = new DomainForm(this, name["name"].ToString(), UserSettings["explorer-tx"], UserSettings["explorer-domain"]);
@@ -520,7 +533,6 @@ namespace FireWalletLite
                 }
                 return;
             }
-
             JObject result = JObject.Parse(jObject["result"].ToString());
             string hash = result["hash"].ToString();
             AddLog("Batch sent with hash: " + hash);
