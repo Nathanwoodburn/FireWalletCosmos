@@ -9,7 +9,7 @@ namespace FireWalletLite
     {
         #region Constants
         MainForm mainForm = new MainForm();
-        bool hideScreen = false;
+        bool hideScreen = true;
         Process HSDProcess;
         #endregion
 
@@ -20,19 +20,11 @@ namespace FireWalletLite
             SplashScreen splashScreen = new SplashScreen(false);
             splashScreen.Show();
             Application.DoEvents();
-
             DateTime start = DateTime.Now;
-            while ((DateTime.Now - start).TotalSeconds < 5)
-            {
-                Thread.Sleep(10);
-                Application.DoEvents();
-            }
-
             // Install and load node
             string dir = mainForm.dir;
             HSDProcess = new Process();
             if (!Directory.Exists(dir)) Environment.Exit(1);
-
             string hsdPath = dir + "hsd\\bin\\hsd.exe";
             if (!Directory.Exists(dir + "hsd"))
             {
@@ -58,7 +50,11 @@ namespace FireWalletLite
                 HSDProcess.StartInfo.RedirectStandardError = false;
             }
             HSDProcess.Start();
-
+            while ((DateTime.Now - start).TotalSeconds < 5)
+            {
+                Thread.Sleep(10);
+                Application.DoEvents();
+            }
             splashScreen.CloseSplash();
             while (!splashScreen.IsClosed)
             {
@@ -238,5 +234,6 @@ namespace FireWalletLite
             }
         }
         #endregion
+
     }
 }

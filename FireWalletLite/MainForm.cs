@@ -1,17 +1,37 @@
 ﻿using System.Data;
 using System.Diagnostics;
+using System.DirectoryServices.ActiveDirectory;
+using System.Runtime.InteropServices;
 using FireWallet;
 using Newtonsoft.Json.Linq;
+using static QRCoder.PayloadGenerator;
 
 namespace FireWalletLite
 {
     public partial class MainForm : Form
     {
+        #region Constants and Config
+        // Directory to store files including logs, theme and hsd node
+        public string dir = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\"
+            + Application.ProductName.Trim().Replace(" ", "") + "\\";
+
+        // How many days to check for domain exiries. If domain will expire in less than this, prompt user to renew.
+        public int daysToExpire = 90;
+
+        // Explorer URLs for transactions and domains
+        public string TXExplorer = "https://niami.io/tx/";
+        public string DomainExplorer = "https://niami.io/domain/";
+
+        // Links to show in help dropdown menu
+        public Dictionary<string, string> HelpLinks = new Dictionary<string, string>()
+        {
+            { "Discord", "https://l.woodburn.au/discord" },
+            { "Separator" ,""},
+            { "Github", "https://github.com/nathanwoodburn/FireWalletLite" }
+        };
+
+        #endregion
         #region Variables
-        public string dir = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\FireWalletLite\\";
-        public int daysToExpire = 90; // How many days to check for domain exiries. If domain will expire in less than this, prompt user to renew.
-        public string TXExplorer = "https://niami.io/tx/"; // Transaction explorer URL
-        public string DomainExplorer = "https://niami.io/domain/"; // Domain explorer URL        
         public Dictionary<string, string> Theme { get; set; }
         HttpClient httpClient = new HttpClient();
         Decimal Balance { get; set; }
@@ -23,6 +43,26 @@ namespace FireWalletLite
             InitializeComponent();
             UpdateTheme();
             this.Text = Application.ProductName;
+            foreach (KeyValuePair<string, string> link in HelpLinks)
+            {
+                if (link.Key == "Separator")
+                {
+                    DropDownHelp.DropDownItems.Add(new ToolStripSeparator());
+                    continue;
+                }
+                ToolStripMenuItem tsmi = new ToolStripMenuItem(link.Key);
+                tsmi.Click += (s, e) =>
+                {
+                    ProcessStartInfo psi = new ProcessStartInfo
+                    {
+                        FileName = link.Value,
+                        UseShellExecute = true
+                    };
+                    Process.Start(psi);
+                };
+                DropDownHelp.DropDownItems.Add(tsmi);
+            }
+            DropDownHelp.Margin = new Padding(statusStripMain.Width - DropDownHelp.Width - SyncLabel.Width - 20, 0, 0, 0);
         }
         #region Theming
         private void UpdateTheme()
@@ -99,8 +139,6 @@ namespace FireWalletLite
             sw.WriteLine("foreground: #8e05c2");
             sw.WriteLine("background-alt: #3e065f");
             sw.WriteLine("foreground-alt: #ffffff");
-            sw.WriteLine("selected-bg: #000000");
-            sw.WriteLine("selected-fg: #ffffff");
             sw.WriteLine("error: #ff0000");
             sw.Dispose();
             AddLog("Created theme file");
@@ -146,7 +184,6 @@ namespace FireWalletLite
         #region API
         private async void NodeStatus()
         {
-
             if (await APIGet("", false) == "Error")
             {
                 SyncLabel.Text = "Status: Node Not Connected";
@@ -160,17 +197,22 @@ namespace FireWalletLite
                 JObject chain = JObject.Parse(resp["chain"].ToString());
                 decimal progress = Convert.ToDecimal(chain["progress"].ToString());
                 SyncLabel.Text = "Sync: " + decimal.Round(progress * 100, 2) + "%";
+                if (progress < 1)
+                {
+                    LabelSyncWarning.Visible = true;
+                    DropDownHelp.Margin = new Padding(statusStripMain.Width - DropDownHelp.Width - SyncLabel.Width - LabelSyncWarning.Width - 20, 0, 0, 0);
+                }
+                else
+                {
+                    LabelSyncWarning.Visible = false;
+                    DropDownHelp.Margin = new Padding(statusStripMain.Width - DropDownHelp.Width - SyncLabel.Width - 20, 0, 0, 0);
+                }
 
-                if (progress < 1) LabelSyncWarning.Visible = true;
-                else LabelSyncWarning.Visible = false;
             }
-
             // Try to keep wallet unlocked
             string path = "wallet/" + Account + "/unlock";
             string content = "{\"passphrase\": \"" + Password + "\",\"timeout\": 60}";
-
             await APIPost(path, true, content);
-
             path = "";
             content = "{\"method\": \"selectwallet\",\"params\":[ \"" + Account + "\"]}";
 
@@ -388,14 +430,13 @@ namespace FireWalletLite
         {
             groupBoxLogin.Left = (this.ClientSize.Width - groupBoxLogin.Width) / 2;
             groupBoxLogin.Top = (this.ClientSize.Height - groupBoxLogin.Height) / 2;
-
             pictureBoxLogo.Height = groupBoxLogin.Top - 20;
             pictureBoxLogo.Width = pictureBoxLogo.Height;
             pictureBoxLogo.Top = 10;
             pictureBoxLogo.Left = (this.ClientSize.Width - pictureBoxLogo.Width) / 2;
-
-
+            this.TopMost = true;
             textBoxPassword.Focus();
+            this.TopMost = false;
         }
         private async void TestForLogin()
         {
@@ -436,6 +477,14 @@ namespace FireWalletLite
             panelLogin.Hide();
             panelNav.Dock = DockStyle.Left;
             panelPortfolio.Show();
+
+            // Some UI stuff
+            groupBoxAccount.Top = statusStripMain.Height + 10;
+            groupBoxDomains.Top = statusStripMain.Height + 10;
+            groupBoxDomains.Height = this.Height - groupBoxDomains.Top - 20;
+            buttonReceive.Top = statusStripMain.Height + 10;
+            buttonSend.Top = buttonReceive.Top + buttonReceive.Height + 10;
+            buttonRenew.Top = groupBoxAccount.Top + groupBoxAccount.Height + 10;
 
         }
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)

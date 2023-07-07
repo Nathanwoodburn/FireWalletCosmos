@@ -120,10 +120,19 @@
   <metadata name="statusStripMain.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>17, 17</value>
   </metadata>
+  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="DropDownHelp.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
+        YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAACRSURBVDhPY/j27dt/SjDYACcnJ7IwigEf3n8kCZNswPNb
+        J/+f6DYF0yA+yQac6Db5f6hWCmwIiE+mC0wIu2DS2Vf/F1x6DefjwlgNyNr34r/0wkdgTMgQDAOQNRNj
+        CIoBOg0rMTTDMLIhIHbriZeYBmDTiIxBGkEYxge5liQDsGGQqykyAISpZwAlmIEywMAAAAc1/Jwvt6sN
+        AAAAAElFTkSuQmCC
+</value>
+  </data>
   <metadata name="timerUpdate.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>164, 17</value>
   </metadata>
-  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="pictureBoxLogo.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAAfwAAAGuCAYAAAB1FLTvAAABgmlDQ1BJQ0MgcHJvZmlsZQAAKM+VkUso
@@ -133,7 +142,7 @@
         2rGEB4Q7EpYt+cG5IicUryu2sqvmzz3VCxuW7dkZpctsZ5wJpphGw2CVDFny9Mhqi+ISlf1IBX+b758W
         lyGuDKY4RlnBQvf9qD/43a2b7O8rJjVEoPrJ8946oXYLvgqe93noeV9HUPUIF3bJv3IAQ++iF0paxz40
         bcDZZUkztuF8E1ofcrqj+1KVzGAyCa8n8k1xaL6G+oVibz/7HN9BTLqavILdPehKSfZihXfXlff25xm/
-        PyLflwVytc4cImAAAAAJcEhZcwAADsIAAA7CARUoSoAAAAAHdElNRQfnBhYEEA/g09tlAAD3M0lEQVR4
+        PyLflwVytc4cImAAAAAJcEhZcwAADrwAAA68AZW8ckkAAAAHdElNRQfnBhYEEA/g09tlAAD3M0lEQVR4
         Xuz9d7sd1Znu/+5/z3X2r22CMiJnITKInDHYmAxCAeW8lHPWUiQLAQKRs+12Y8B2u22DUztgY7vZ+3de
         id/COOOums+cTz3zHlWjatZcQarnur6X1pqid2iFj0bVqFH/q5lmmmmmmWaaaaaZZppppplmmmmmmWaa
         aaaZZpoZdXPSSf921+OPP+Qef+wBd87Zk13r42aaaaaZZpppZhTMt04Z7y6+apq75pbb3MnjJoQdHzv2

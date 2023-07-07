@@ -32,6 +32,8 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             statusStripMain = new StatusStrip();
             SyncLabel = new ToolStripStatusLabel();
+            LabelSyncWarning = new ToolStripStatusLabel();
+            DropDownHelp = new ToolStripDropDownButton();
             timerUpdate = new System.Windows.Forms.Timer(components);
             panelLogin = new Panel();
             pictureBoxLogo = new PictureBox();
@@ -50,7 +52,6 @@
             groupBoxAccount = new GroupBox();
             labelDomains = new Label();
             labelBalance = new Label();
-            LabelSyncWarning = new ToolStripStatusLabel();
             statusStripMain.SuspendLayout();
             panelLogin.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBoxLogo).BeginInit();
@@ -64,7 +65,7 @@
             // statusStripMain
             // 
             statusStripMain.Dock = DockStyle.Top;
-            statusStripMain.Items.AddRange(new ToolStripItem[] { SyncLabel, LabelSyncWarning });
+            statusStripMain.Items.AddRange(new ToolStripItem[] { SyncLabel, LabelSyncWarning, DropDownHelp });
             statusStripMain.Location = new Point(0, 0);
             statusStripMain.Name = "statusStripMain";
             statusStripMain.Size = new Size(1099, 22);
@@ -78,6 +79,23 @@
             SyncLabel.Size = new Size(158, 17);
             SyncLabel.Text = "Status: Node Not Connected";
             // 
+            // LabelSyncWarning
+            // 
+            LabelSyncWarning.Name = "LabelSyncWarning";
+            LabelSyncWarning.Size = new Size(443, 17);
+            LabelSyncWarning.Text = "Please wait for node to sync. Account info could be incorrect while node is behind.";
+            LabelSyncWarning.Visible = false;
+            // 
+            // DropDownHelp
+            // 
+            DropDownHelp.DisplayStyle = ToolStripItemDisplayStyle.Text;
+            DropDownHelp.Image = (Image)resources.GetObject("DropDownHelp.Image");
+            DropDownHelp.ImageTransparentColor = Color.Magenta;
+            DropDownHelp.Name = "DropDownHelp";
+            DropDownHelp.Size = new Size(62, 20);
+            DropDownHelp.Text = "Support";
+            DropDownHelp.ToolTipText = "Get Support";
+            // 
             // timerUpdate
             // 
             timerUpdate.Enabled = true;
@@ -88,7 +106,7 @@
             // 
             panelLogin.Controls.Add(pictureBoxLogo);
             panelLogin.Controls.Add(groupBoxLogin);
-            panelLogin.Location = new Point(12, 40);
+            panelLogin.Location = new Point(1025, 185);
             panelLogin.Name = "panelLogin";
             panelLogin.Size = new Size(1099, 558);
             panelLogin.TabIndex = 1;
@@ -123,16 +141,16 @@
             labelWelcome.Font = new Font("Segoe UI", 14F, FontStyle.Regular, GraphicsUnit.Point);
             labelWelcome.Location = new Point(119, 25);
             labelWelcome.Name = "labelWelcome";
-            labelWelcome.Size = new Size(212, 25);
+            labelWelcome.Size = new Size(238, 25);
             labelWelcome.TabIndex = 3;
-            labelWelcome.Text = "Login to access account";
+            labelWelcome.Text = "Login to access your wallet";
             // 
             // textBoxPassword
             // 
             textBoxPassword.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
-            textBoxPassword.Location = new Point(209, 70);
+            textBoxPassword.Location = new Point(174, 71);
             textBoxPassword.Name = "textBoxPassword";
-            textBoxPassword.Size = new Size(137, 29);
+            textBoxPassword.Size = new Size(235, 29);
             textBoxPassword.TabIndex = 2;
             textBoxPassword.UseSystemPasswordChar = true;
             textBoxPassword.KeyDown += textBoxPassword_KeyDown;
@@ -141,7 +159,7 @@
             // 
             labelPassword.AutoSize = true;
             labelPassword.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
-            labelPassword.Location = new Point(114, 73);
+            labelPassword.Location = new Point(79, 74);
             labelPassword.Name = "labelPassword";
             labelPassword.Size = new Size(79, 21);
             labelPassword.TabIndex = 1;
@@ -165,7 +183,7 @@
             panelPortfolio.Controls.Add(groupBoxDomains);
             panelPortfolio.Controls.Add(panelNav);
             panelPortfolio.Controls.Add(groupBoxAccount);
-            panelPortfolio.Location = new Point(1041, 468);
+            panelPortfolio.Location = new Point(0, 25);
             panelPortfolio.Name = "panelPortfolio";
             panelPortfolio.Size = new Size(1052, 529);
             panelPortfolio.TabIndex = 2;
@@ -176,7 +194,7 @@
             buttonRenew.Enabled = false;
             buttonRenew.FlatStyle = FlatStyle.Flat;
             buttonRenew.Font = new Font("Segoe UI", 14F, FontStyle.Regular, GraphicsUnit.Point);
-            buttonRenew.Location = new Point(102, 117);
+            buttonRenew.Location = new Point(102, 171);
             buttonRenew.Name = "buttonRenew";
             buttonRenew.Size = new Size(299, 49);
             buttonRenew.TabIndex = 3;
@@ -188,9 +206,9 @@
             // 
             groupBoxDomains.Controls.Add(panelDomainList);
             groupBoxDomains.Font = new Font("Segoe UI", 14F, FontStyle.Regular, GraphicsUnit.Point);
-            groupBoxDomains.Location = new Point(407, 3);
+            groupBoxDomains.Location = new Point(407, 57);
             groupBoxDomains.Name = "groupBoxDomains";
-            groupBoxDomains.Size = new Size(642, 523);
+            groupBoxDomains.Size = new Size(642, 469);
             groupBoxDomains.TabIndex = 2;
             groupBoxDomains.TabStop = false;
             groupBoxDomains.Text = "Domains";
@@ -202,7 +220,7 @@
             panelDomainList.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
             panelDomainList.Location = new Point(3, 28);
             panelDomainList.Name = "panelDomainList";
-            panelDomainList.Size = new Size(636, 492);
+            panelDomainList.Size = new Size(636, 438);
             panelDomainList.TabIndex = 0;
             // 
             // panelNav
@@ -219,7 +237,7 @@
             // 
             buttonSend.FlatStyle = FlatStyle.Flat;
             buttonSend.Font = new Font("Segoe UI", 14F, FontStyle.Regular, GraphicsUnit.Point);
-            buttonSend.Location = new Point(3, 45);
+            buttonSend.Location = new Point(3, 99);
             buttonSend.Name = "buttonSend";
             buttonSend.Size = new Size(90, 36);
             buttonSend.TabIndex = 1;
@@ -231,7 +249,7 @@
             // 
             buttonReceive.FlatStyle = FlatStyle.Flat;
             buttonReceive.Font = new Font("Segoe UI", 14F, FontStyle.Regular, GraphicsUnit.Point);
-            buttonReceive.Location = new Point(3, 3);
+            buttonReceive.Location = new Point(3, 57);
             buttonReceive.Name = "buttonReceive";
             buttonReceive.Size = new Size(90, 36);
             buttonReceive.TabIndex = 0;
@@ -244,7 +262,7 @@
             groupBoxAccount.Controls.Add(labelDomains);
             groupBoxAccount.Controls.Add(labelBalance);
             groupBoxAccount.Font = new Font("Segoe UI", 14F, FontStyle.Regular, GraphicsUnit.Point);
-            groupBoxAccount.Location = new Point(102, 3);
+            groupBoxAccount.Location = new Point(102, 57);
             groupBoxAccount.Name = "groupBoxAccount";
             groupBoxAccount.Size = new Size(299, 108);
             groupBoxAccount.TabIndex = 0;
@@ -268,13 +286,6 @@
             labelBalance.Size = new Size(79, 25);
             labelBalance.TabIndex = 0;
             labelBalance.Text = "labelBal";
-            // 
-            // LabelSyncWarning
-            // 
-            LabelSyncWarning.Name = "LabelSyncWarning";
-            LabelSyncWarning.Size = new Size(443, 17);
-            LabelSyncWarning.Text = "Please wait for node to sync. Account info could be incorrect while node is behind.";
-            LabelSyncWarning.Visible = false;
             // 
             // MainForm
             // 
@@ -329,5 +340,6 @@
         private Button buttonSend;
         private PictureBox pictureBoxLogo;
         private ToolStripStatusLabel LabelSyncWarning;
+        private ToolStripDropDownButton DropDownHelp;
     }
 }

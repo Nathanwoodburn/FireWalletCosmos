@@ -36,16 +36,16 @@
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(448, 260);
-            FormBorderStyle = FormBorderStyle.Fixed3D;
+            ControlBox = false;
+            Enabled = false;
+            FormBorderStyle = FormBorderStyle.SizableToolWindow;
             Icon = (Icon)resources.GetObject("$this.Icon");
             MaximizeBox = false;
             MinimizeBox = false;
             Name = "Loader";
-            Text = "Loader";
-            Visible = false;
-            Opacity = 0;
-            FormBorderStyle = FormBorderStyle.SizableToolWindow;
+            Opacity = 0D;
             ShowInTaskbar = false;
+            Text = "Loader";
             ResumeLayout(false);
         }
 
