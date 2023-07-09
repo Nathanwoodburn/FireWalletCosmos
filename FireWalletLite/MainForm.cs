@@ -485,7 +485,8 @@ namespace FireWalletLite
             buttonReceive.Top = statusStripMain.Height + 10;
             buttonSend.Top = buttonReceive.Top + buttonReceive.Height + 10;
             buttonRenew.Top = groupBoxAccount.Top + groupBoxAccount.Height + 10;
-
+            groupBoxHistory.Top = buttonRenew.Top + buttonRenew.Height + 10;
+            groupBoxHistory.Height = this.Height - groupBoxHistory.Top - 40;
         }
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
