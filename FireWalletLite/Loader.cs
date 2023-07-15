@@ -8,7 +8,7 @@ namespace FireWalletLite
     {
         #region Constants
         MainForm mainForm = new MainForm();
-        bool hideScreen = false;
+        bool hideScreen = true;
         Process HSDProcess;
         #endregion
 
