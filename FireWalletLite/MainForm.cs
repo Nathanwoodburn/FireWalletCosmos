@@ -1,12 +1,15 @@
 ﻿using System.Diagnostics;
+using System.DirectoryServices.ActiveDirectory;
 using FireWallet;
 using Newtonsoft.Json.Linq;
+using static QRCoder.PayloadGenerator;
 
 namespace FireWalletLite
 {
     public partial class MainForm : Form
     {
         #region Constants and Config
+
         // Directory to store files including logs, theme and hsd node
         public string dir = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\"
             + Application.ProductName.Trim().Replace(" ", "") + "\\";
@@ -22,18 +25,25 @@ namespace FireWalletLite
         public Dictionary<string, string> HelpLinks = new Dictionary<string, string>()
         {
             { "Discord", "https://l.woodburn.au/discord" },
-            { "Separator" ,""},
+            { "Separator", "" },
             { "Github", "https://github.com/nathanwoodburn/FireWalletLite" }
         };
 
+        // Min Confirmations for transactions to be considered valid
+        public int MinConfirmations = 1;
+
         #endregion
+
         #region Variables
+
         public Dictionary<string, string> Theme { get; set; }
         HttpClient httpClient = new HttpClient();
         Decimal Balance { get; set; }
         public String Account = "primary";
         public String Password { get; set; }
+
         #endregion
+
         public MainForm()
         {
             InitializeComponent();
@@ -46,6 +56,7 @@ namespace FireWalletLite
                     DropDownHelp.DropDownItems.Add(new ToolStripSeparator());
                     continue;
                 }
+
                 ToolStripMenuItem tsmi = new ToolStripMenuItem(link.Key);
                 tsmi.Click += (s, e) =>
                 {
@@ -58,9 +69,13 @@ namespace FireWalletLite
                 };
                 DropDownHelp.DropDownItems.Add(tsmi);
             }
-            DropDownHelp.Margin = new Padding(statusStripMain.Width - DropDownHelp.Width - SyncLabel.Width - 20, 0, 0, 0);
+
+            DropDownHelp.Margin =
+                new Padding(statusStripMain.Width - DropDownHelp.Width - SyncLabel.Width - 20, 0, 0, 0);
         }
+
         #region Theming
+
         private void UpdateTheme()
         {
             // Check if file exists
@@ -68,6 +83,7 @@ namespace FireWalletLite
             {
                 CreateConfig(dir);
             }
+
             if (!File.Exists(dir + "theme.txt"))
             {
                 CreateConfig(dir);
@@ -82,9 +98,11 @@ namespace FireWalletLite
                 string[] split = line.Split(':');
                 Theme.Add(split[0].Trim(), split[1].Trim());
             }
+
             sr.Dispose();
 
-            if (!Theme.ContainsKey("background") || !Theme.ContainsKey("background-alt") || !Theme.ContainsKey("foreground") || !Theme.ContainsKey("foreground-alt"))
+            if (!Theme.ContainsKey("background") || !Theme.ContainsKey("background-alt") ||
+                !Theme.ContainsKey("foreground") || !Theme.ContainsKey("foreground-alt"))
             {
                 AddLog("Theme file is missing key");
                 return;
@@ -102,9 +120,11 @@ namespace FireWalletLite
             {
                 ThemeControl(c);
             }
+
             this.Width = Screen.PrimaryScreen.Bounds.Width / 5 * 3;
             this.Height = Screen.PrimaryScreen.Bounds.Height / 5 * 3;
         }
+
         public void ThemeControl(Control c)
         {
             if (c.GetType() == typeof(GroupBox) || c.GetType() == typeof(Panel))
@@ -115,21 +135,26 @@ namespace FireWalletLite
                     ThemeControl(sub);
                 }
             }
+
             if (c.GetType() == typeof(TextBox) || c.GetType() == typeof(Button)
-                || c.GetType() == typeof(ComboBox) || c.GetType() == typeof(StatusStrip) || c.GetType() == typeof(ToolStrip)
-                || c.GetType() == typeof(NumericUpDown))
+                                               || c.GetType() == typeof(ComboBox) ||
+                                               c.GetType() == typeof(StatusStrip) || c.GetType() == typeof(ToolStrip)
+                                               || c.GetType() == typeof(NumericUpDown))
             {
                 c.ForeColor = ColorTranslator.FromHtml(Theme["foreground-alt"]);
                 c.BackColor = ColorTranslator.FromHtml(Theme["background-alt"]);
             }
+
             if (c.GetType() == typeof(Panel)) c.Dock = DockStyle.Fill;
         }
+
         private void CreateConfig(string dir)
         {
             if (!Directory.Exists(dir))
             {
                 Directory.CreateDirectory(dir);
             }
+
             StreamWriter sw = new StreamWriter(dir + "theme.txt");
             sw.WriteLine("background: #000000");
             sw.WriteLine("foreground: #8e05c2");
@@ -139,11 +164,15 @@ namespace FireWalletLite
             sw.Dispose();
             AddLog("Created theme file");
         }
+
         #endregion
+
         #region Logging
+
         public void AddLog(string message)
         {
-            if (message.Contains("Get Error: No connection could be made because the target machine actively refused it")) return;
+            if (message.Contains(
+                    "Get Error: No connection could be made because the target machine actively refused it")) return;
 
             // If file size is over 1MB, rename it to old.log.txt
             if (File.Exists(dir + "log.txt"))
@@ -151,7 +180,8 @@ namespace FireWalletLite
                 FileInfo fi = new FileInfo(dir + "log.txt");
                 if (fi.Length > 1000000)
                 {
-                    if (File.Exists(dir + "old.log.txt")) File.Delete(dir + "old.log.txt"); // Delete old log file as it is super old
+                    if (File.Exists(dir + "old.log.txt"))
+                        File.Delete(dir + "old.log.txt"); // Delete old log file as it is super old
                     File.Move(dir + "log.txt", dir + "old.log.txt");
                 }
             }
@@ -160,8 +190,11 @@ namespace FireWalletLite
             sw.WriteLine(DateTime.Now.ToString() + ": " + message);
             sw.Dispose();
         }
+
         #endregion
+
         bool testedLogin = false;
+
         private void timerUpdate_Tick(object sender, EventArgs e)
         {
             if (SyncLabel.Text != "Status: Node Not Connected")
@@ -174,10 +207,12 @@ namespace FireWalletLite
                     this.Show();
                 }
             }
+
             NodeStatus();
         }
 
         #region API
+
         private async void NodeStatus()
         {
             if (await APIGet("", false) == "Error")
@@ -196,15 +231,20 @@ namespace FireWalletLite
                 if (progress < 1)
                 {
                     LabelSyncWarning.Visible = true;
-                    DropDownHelp.Margin = new Padding(statusStripMain.Width - DropDownHelp.Width - SyncLabel.Width - LabelSyncWarning.Width - 20, 0, 0, 0);
+                    DropDownHelp.Margin =
+                        new Padding(
+                            statusStripMain.Width - DropDownHelp.Width - SyncLabel.Width - LabelSyncWarning.Width - 20,
+                            0, 0, 0);
                 }
                 else
                 {
                     LabelSyncWarning.Visible = false;
-                    DropDownHelp.Margin = new Padding(statusStripMain.Width - DropDownHelp.Width - SyncLabel.Width - 20, 0, 0, 0);
+                    DropDownHelp.Margin = new Padding(statusStripMain.Width - DropDownHelp.Width - SyncLabel.Width - 20,
+                        0, 0, 0);
                 }
 
             }
+
             // Try to keep wallet unlocked
             string path = "wallet/" + Account + "/unlock";
             string content = "{\"passphrase\": \"" + Password + "\",\"timeout\": 60}";
@@ -215,6 +255,7 @@ namespace FireWalletLite
             await APIPost(path, true, content);
 
         }
+
         private async Task UpdateBalance()
         {
             string response = await APIGet("wallet/" + Account + "/balance?account=default", true);
@@ -222,7 +263,8 @@ namespace FireWalletLite
 
             JObject resp = JObject.Parse(response);
 
-            decimal available = (Convert.ToDecimal(resp["unconfirmed"].ToString()) - Convert.ToDecimal(resp["lockedUnconfirmed"].ToString())) / 1000000;
+            decimal available = (Convert.ToDecimal(resp["unconfirmed"].ToString()) -
+                                 Convert.ToDecimal(resp["lockedUnconfirmed"].ToString())) / 1000000;
             decimal locked = Convert.ToDecimal(resp["lockedUnconfirmed"].ToString()) / 1000000;
             available = decimal.Round(available, 2);
             locked = decimal.Round(locked, 2);
@@ -233,12 +275,14 @@ namespace FireWalletLite
             UpdateDomains();
 
         }
+
         public async Task<string> APIPost(string path, bool wallet, string content)
         {
             if (content == "{\"passphrase\": \"\",\"timeout\": 60}")
             {
                 return "";
             }
+
             string ip = "127.0.0.1";
             string port = "1203";
             if (wallet) port = port + "9";
@@ -256,6 +300,7 @@ namespace FireWalletLite
                     AddLog(await resp.Content.ReadAsStringAsync());
                     return "Error";
                 }
+
                 return await resp.Content.ReadAsStringAsync();
 
             }
@@ -266,9 +311,11 @@ namespace FireWalletLite
                 {
                     Environment.Exit(91);
                 }
+
                 return "Error";
             }
         }
+
         public async Task<string> APIGet(string path, bool wallet)
         {
             string ip = "127.0.0.1";
@@ -278,7 +325,8 @@ namespace FireWalletLite
             else port = port + "7";
             try
             {
-                HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, "http://" + ip + ":" + port + "/" + path);
+                HttpRequestMessage request =
+                    new HttpRequestMessage(HttpMethod.Get, "http://" + ip + ":" + port + "/" + path);
                 // Add API key to header
                 //request.Headers.Add("Authorization", "Basic " + Convert.ToBase64String(System.Text.ASCIIEncoding.ASCII.GetBytes("x:" + key)));
                 // Send request and log response
@@ -289,6 +337,7 @@ namespace FireWalletLite
                     AddLog(await response.Content.ReadAsStringAsync());
                     return "Error";
                 }
+
                 return await response.Content.ReadAsStringAsync();
 
             }
@@ -300,19 +349,24 @@ namespace FireWalletLite
                 {
                     Environment.Exit(91);
                 }
+
                 return "Error";
             }
         }
+
         public async Task<bool> ValidAddress(string address)
         {
-            string output = await APIPost("", false, "{\"method\": \"validateaddress\",\"params\": [ \"" + address + "\" ]}");
+            string output = await APIPost("", false,
+                "{\"method\": \"validateaddress\",\"params\": [ \"" + address + "\" ]}");
             JObject APIresp = JObject.Parse(output);
             JObject result = JObject.Parse(APIresp["result"].ToString());
             if (result["isvalid"].ToString() == "True") return true;
             else return false;
         }
+
         public string[] Domains { get; set; }
         public string[] DomainsRenewable { get; set; }
+
         private async void UpdateDomains()
         {
             string response = await APIGet("wallet/" + Account + "/name?own=true", true);
@@ -362,6 +416,7 @@ namespace FireWalletLite
                         AddLog("Domain " + Domains[i] + " does not have stats");
                         continue;
                     }
+
                     Label expiry = new Label();
                     JObject stats = JObject.Parse(name["stats"].ToString());
                     if (stats.ContainsKey("daysUntilExpire"))
@@ -403,9 +458,11 @@ namespace FireWalletLite
                             domainForm.Show();
                         });
                     }
+
                     panelDomainList.Controls.Add(domainTMP);
                     i++;
                 }
+
                 labelDomains.Text = "Domains: " + names.Count;
 
                 if (renewable > 0)
@@ -420,6 +477,136 @@ namespace FireWalletLite
                 AddLog(ex.Message);
             }
         }
+
+        private async Task GetTXHistory()
+        {
+            // Check how many TX there are
+            string APIresponse = await APIGet("wallet/" + Account, true);
+            JObject wallet = JObject.Parse(APIresponse);
+            if (!wallet.ContainsKey("balance"))
+            {
+                AddLog("GetInfo Error");
+                AddLog(APIresponse);
+                return;
+            }
+
+            JObject balance = JObject.Parse(wallet["balance"].ToString());
+            int TotalTX = Convert.ToInt32(balance["tx"].ToString());
+            int toGet = 10;
+
+            if (toGet > TotalTX) toGet = TotalTX;
+            int toSkip = TotalTX - toGet;
+
+            // GET TXs
+            APIresponse = await APIPost("", true,
+                "{\"method\": \"listtransactions\",\"params\": [\"default\"," + toGet + "," + toSkip + "]}");
+
+            if (APIresponse == "Error")
+            {
+                AddLog("GetInfo Error");
+                return;
+            }
+
+            JObject TXGET = JObject.Parse(APIresponse);
+
+            // Check for error
+            if (TXGET["error"].ToString() != "")
+            {
+                AddLog("GetInfo Error");
+                AddLog(APIresponse);
+                return;
+            }
+
+            JArray txs = JArray.Parse(TXGET["result"].ToString());
+            if (toGet > txs.Count)
+                toGet = txs.Count; // In case there are less TXs than expected (usually happens when the get TX's fails)
+            Control[] tmpControls = new Control[toGet];
+            for (int i = 0; i < toGet; i++)
+            {
+
+                // Get last tx
+                JObject tx =
+                    JObject.Parse(await APIGet("wallet/" + Account + "/tx/" + txs[toGet - i - 1]["txid"].ToString(),
+                        true));
+
+                string hash = tx["hash"].ToString();
+                string date = tx["mdate"].ToString();
+
+                date = DateTime.Parse(date).ToShortDateString();
+
+
+
+
+                Panel tmpPanel = new Panel();
+                tmpPanel.Width = groupBoxHistory.Width - SystemInformation.VerticalScrollBarWidth - 20;
+                tmpPanel.Height = 50;
+                tmpPanel.Location = new Point(5, (i * 55));
+                tmpPanel.BorderStyle = BorderStyle.FixedSingle;
+                tmpPanel.BackColor = ColorTranslator.FromHtml(Theme["background-alt"]);
+                tmpPanel.ForeColor = ColorTranslator.FromHtml(Theme["foreground-alt"]);
+                tmpPanel.Controls.Add(
+                    new Label()
+                    {
+                        Text = "Date: " + date,
+                        Location = new Point(10, 5)
+                    }
+                );
+                int confirmations = Convert.ToInt32(tx["confirmations"].ToString());
+                if (confirmations < MinConfirmations)
+                {
+                    Label txPending = new Label()
+                    {
+                        Text = "Pending",
+                        Location = new Point(100, 5)
+                    };
+                    tmpPanel.Controls.Add(txPending);
+                    txPending.BringToFront();
+                }
+
+
+                Label labelHash = new Label()
+                {
+                    Text = "Hash: " + hash.Substring(0, 10) + "..." + hash.Substring(hash.Length - 10),
+                    AutoSize = true,
+                    Location = new Point(10, 25)
+                };
+
+                tmpPanel.Controls.Add(labelHash);
+                tmpPanel.Click += (sender, e) =>
+                {
+                    ProcessStartInfo psi = new ProcessStartInfo
+                    {
+                        FileName = TXExplorer + hash,
+                        UseShellExecute = true
+                    };
+                    Process.Start(psi);
+                };
+                foreach (Control c in tmpPanel.Controls)
+                {
+                    c.Click += (sender, e) =>
+                    {
+                        ProcessStartInfo psi = new ProcessStartInfo
+                        {
+                            FileName = TXExplorer + hash,
+                            UseShellExecute = true
+                        };
+                        Process.Start(psi);
+                    };
+                }
+
+                tmpControls[i] = tmpPanel;
+
+
+            }
+            groupBoxHistory.Controls.Clear();
+            Panel txPanel = new Panel();
+            txPanel.Width = groupBoxHistory.Width - SystemInformation.VerticalScrollBarWidth;
+            txPanel.Controls.AddRange(tmpControls);
+            txPanel.AutoScroll = true;
+            txPanel.Dock = DockStyle.Fill;
+            groupBoxHistory.Controls.Add(txPanel);
+        }
+
         #endregion
         private void MainForm_Load(object sender, EventArgs e)
         {
@@ -469,6 +656,7 @@ namespace FireWalletLite
             }
             groupBoxDomains.Width = this.Width - groupBoxDomains.Left - 20;
             await UpdateBalance();
+            await GetTXHistory();
             panelLogin.Hide();
             panelNav.Dock = DockStyle.Left;
             panelPortfolio.Show();
