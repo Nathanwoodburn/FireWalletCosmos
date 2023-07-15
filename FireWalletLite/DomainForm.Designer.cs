@@ -39,8 +39,10 @@
             buttonCancel = new Button();
             buttonFinalize = new Button();
             groupBoxSign = new GroupBox();
+            buttonSign = new Button();
             textBoxSignMessage = new TextBox();
             labelSignMessage = new Label();
+            textBoxSignature = new TextBox();
             groupBoxManage.SuspendLayout();
             groupBoxSign.SuspendLayout();
             SuspendLayout();
@@ -151,6 +153,8 @@
             // 
             // groupBoxSign
             // 
+            groupBoxSign.Controls.Add(textBoxSignature);
+            groupBoxSign.Controls.Add(buttonSign);
             groupBoxSign.Controls.Add(textBoxSignMessage);
             groupBoxSign.Controls.Add(labelSignMessage);
             groupBoxSign.Font = new Font("Segoe UI", 14F, FontStyle.Regular, GraphicsUnit.Point);
@@ -161,12 +165,22 @@
             groupBoxSign.TabStop = false;
             groupBoxSign.Text = "Sign";
             // 
+            // buttonSign
+            // 
+            buttonSign.Location = new Point(606, 218);
+            buttonSign.Name = "buttonSign";
+            buttonSign.Size = new Size(138, 33);
+            buttonSign.TabIndex = 2;
+            buttonSign.Text = "Sign";
+            buttonSign.UseVisualStyleBackColor = true;
+            buttonSign.Click += buttonSign_Click;
+            // 
             // textBoxSignMessage
             // 
             textBoxSignMessage.Location = new Point(6, 56);
             textBoxSignMessage.Multiline = true;
             textBoxSignMessage.Name = "textBoxSignMessage";
-            textBoxSignMessage.Size = new Size(744, 195);
+            textBoxSignMessage.Size = new Size(472, 156);
             textBoxSignMessage.TabIndex = 1;
             // 
             // labelSignMessage
@@ -177,6 +191,15 @@
             labelSignMessage.Size = new Size(90, 25);
             labelSignMessage.TabIndex = 0;
             labelSignMessage.Text = "Message:";
+            // 
+            // textBoxSignature
+            // 
+            textBoxSignature.Location = new Point(484, 56);
+            textBoxSignature.Multiline = true;
+            textBoxSignature.Name = "textBoxSignature";
+            textBoxSignature.ReadOnly = true;
+            textBoxSignature.Size = new Size(260, 156);
+            textBoxSignature.TabIndex = 3;
             // 
             // DomainForm
             // 
@@ -216,5 +239,7 @@
         private GroupBox groupBoxSign;
         private TextBox textBoxSignMessage;
         private Label labelSignMessage;
+        private Button buttonSign;
+        private TextBox textBoxSignature;
     }
 }

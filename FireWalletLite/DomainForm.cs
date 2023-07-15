@@ -37,7 +37,7 @@ namespace FireWalletLite
         private void DomainForm_Load(object sender, EventArgs e)
         {
             if (!File.Exists(Main.dir + "domains.json")) return;
-            
+
             JArray domains = JArray.Parse(File.ReadAllText(Main.dir + "domains.json"));
             foreach (JObject domain in domains)
             {
@@ -236,6 +236,38 @@ namespace FireWalletLite
                 domain["status"] = status;
                 domains.Add(domain);
                 File.WriteAllText(Main.dir + "domains.json", domains.ToString());
+            }
+        }
+
+        private async void buttonSign_Click(object sender, EventArgs e)
+        {
+            if (textBoxSignMessage.Text == "")
+            {
+                NotifyForm notify = new NotifyForm("Enter a message to sign");
+                notify.ShowDialog();
+                notify.Dispose();
+                return;
+            }
+            string content = "{\"method\": \"signmessagewithname\", \"params\": [\"" + Domain + "\", \"" + textBoxSignMessage.Text + "\"]}";
+            string response = await Main.APIPost("", true, content);
+            Main.AddLog(response);
+            if (response == "Error")
+            {
+                NotifyForm notify = new NotifyForm("Error signing message");
+                notify.ShowDialog();
+                notify.Dispose();
+                return;
+            }
+            JObject jObject = JObject.Parse(response);
+            if (jObject.ContainsKey("result"))
+            {
+                textBoxSignature.Text = jObject["result"].ToString();
+            }
+            else
+            {
+                NotifyForm notify = new NotifyForm("Error signing message");
+                notify.ShowDialog();
+                notify.Dispose();
             }
         }
     }
