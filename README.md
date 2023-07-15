@@ -12,20 +12,20 @@ First run flow:
 Login only requires password as this wallet is made to only use the `primary` wallet.
 
 
-Main Page includes
-- Balance
-- Domain Count
-- Domain List
+This wallet supports
+- Displaying balance
+- Domain list and expiration date
 - Renew expiring domains button
-- Recieve HNS button (opens a window with address, copy button, and QR code)
-- Send HNS button (opens a window with address, amount, and send button)
+- Displaying receiving address
+- Sending HNS
+- Sign message 
 
 This wallet does not (and will never) support
 - Creating new wallets
 - Auctions (bidding, revealing, etc)
 - Multisig wallets
 - Hardware wallets
-- DNS management (a simple DNS managment page might be added in the future)
+- DNS management
 
 
 If you want to use a wallet with more features, please use [Fire Wallet](https://firewallet.au) or [Bob Wallet](https://bobwallet.io) instead.
