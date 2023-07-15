@@ -39,10 +39,10 @@
             buttonCancel = new Button();
             buttonFinalize = new Button();
             groupBoxSign = new GroupBox();
+            textBoxSignature = new TextBox();
             buttonSign = new Button();
             textBoxSignMessage = new TextBox();
             labelSignMessage = new Label();
-            textBoxSignature = new TextBox();
             groupBoxManage.SuspendLayout();
             groupBoxSign.SuspendLayout();
             SuspendLayout();
@@ -165,6 +165,15 @@
             groupBoxSign.TabStop = false;
             groupBoxSign.Text = "Sign";
             // 
+            // textBoxSignature
+            // 
+            textBoxSignature.Location = new Point(484, 56);
+            textBoxSignature.Multiline = true;
+            textBoxSignature.Name = "textBoxSignature";
+            textBoxSignature.ReadOnly = true;
+            textBoxSignature.Size = new Size(260, 156);
+            textBoxSignature.TabIndex = 3;
+            // 
             // buttonSign
             // 
             buttonSign.Location = new Point(606, 218);
@@ -182,6 +191,7 @@
             textBoxSignMessage.Name = "textBoxSignMessage";
             textBoxSignMessage.Size = new Size(472, 156);
             textBoxSignMessage.TabIndex = 1;
+            textBoxSignMessage.TextChanged += textBoxSignMessage_TextChanged;
             // 
             // labelSignMessage
             // 
@@ -191,15 +201,6 @@
             labelSignMessage.Size = new Size(90, 25);
             labelSignMessage.TabIndex = 0;
             labelSignMessage.Text = "Message:";
-            // 
-            // textBoxSignature
-            // 
-            textBoxSignature.Location = new Point(484, 56);
-            textBoxSignature.Multiline = true;
-            textBoxSignature.Name = "textBoxSignature";
-            textBoxSignature.ReadOnly = true;
-            textBoxSignature.Size = new Size(260, 156);
-            textBoxSignature.TabIndex = 3;
             // 
             // DomainForm
             // 

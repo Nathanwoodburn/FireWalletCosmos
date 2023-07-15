@@ -241,6 +241,23 @@ namespace FireWalletLite
 
         private async void buttonSign_Click(object sender, EventArgs e)
         {
+            if (buttonSign.Text == "Save")
+            {
+                SaveFileDialog saveFileDialog = new SaveFileDialog();
+                saveFileDialog.Filter = "Text File|*.txt";
+                saveFileDialog.Title = "Save Signature";
+                if (saveFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    JObject signature = new JObject();
+                    signature["domain"] = Domain;
+                    signature["message"] = textBoxSignMessage.Text;
+                    signature["signature"] = textBoxSignature.Text;
+                    signature["time"] = DateTime.Now.ToString();
+                    File.WriteAllText(saveFileDialog.FileName, signature.ToString());
+                }
+
+                return;
+            }
             if (textBoxSignMessage.Text == "")
             {
                 NotifyForm notify = new NotifyForm("Enter a message to sign");
@@ -250,7 +267,6 @@ namespace FireWalletLite
             }
             string content = "{\"method\": \"signmessagewithname\", \"params\": [\"" + Domain + "\", \"" + textBoxSignMessage.Text + "\"]}";
             string response = await Main.APIPost("", true, content);
-            Main.AddLog(response);
             if (response == "Error")
             {
                 NotifyForm notify = new NotifyForm("Error signing message");
@@ -262,13 +278,20 @@ namespace FireWalletLite
             if (jObject.ContainsKey("result"))
             {
                 textBoxSignature.Text = jObject["result"].ToString();
+                buttonSign.Text = "Save";
             }
             else
             {
+                Main.AddLog(response);
                 NotifyForm notify = new NotifyForm("Error signing message");
                 notify.ShowDialog();
                 notify.Dispose();
             }
+        }
+
+        private void textBoxSignMessage_TextChanged(object sender, EventArgs e)
+        {
+            buttonSign.Text = "Sign";
         }
     }
 }
