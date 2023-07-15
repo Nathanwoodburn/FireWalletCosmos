@@ -1,5 +1,4 @@
 using System.Diagnostics;
-using System.Net;
 using System.Text.RegularExpressions;
 using FireWallet;
 
@@ -9,7 +8,7 @@ namespace FireWalletLite
     {
         #region Constants
         MainForm mainForm = new MainForm();
-        bool hideScreen = true;
+        bool hideScreen = false;
         Process HSDProcess;
         #endregion
 

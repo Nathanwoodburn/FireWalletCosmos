@@ -6,17 +6,17 @@ namespace FireWalletLite
 {
     public partial class DomainForm : Form
     {
-        private MainForm main;
-        private string domain;
+        private MainForm Main;
+        private string Domain;
         public DomainForm(MainForm main, string domain)
         {
             InitializeComponent();
-            this.main = main;
-            this.domain = domain;
-            this.Text = domain + "/";
+            this.Main = main;
+            this.Domain = domain;
+            Text = domain + "/";
             // Theme form
-            this.BackColor = ColorTranslator.FromHtml(main.Theme["background"]);
-            this.ForeColor = ColorTranslator.FromHtml(main.Theme["foreground"]);
+            BackColor = ColorTranslator.FromHtml(main.Theme["background"]);
+            ForeColor = ColorTranslator.FromHtml(main.Theme["foreground"]);
             foreach (Control control in Controls)
             {
                 main.ThemeControl(control);
@@ -28,105 +28,45 @@ namespace FireWalletLite
         {
             ProcessStartInfo psi = new ProcessStartInfo
             {
-                FileName = main.DomainExplorer + domain,
+                FileName = Main.DomainExplorer + Domain,
                 UseShellExecute = true
             };
             Process.Start(psi);
         }
 
-
-
-
-        private async void GetName()
+        private void DomainForm_Load(object sender, EventArgs e)
         {
-            try
+            if (!File.Exists(Main.dir + "domains.json")) return;
+            
+            JArray domains = JArray.Parse(File.ReadAllText(Main.dir + "domains.json"));
+            foreach (JObject domain in domains)
             {
-                string content = "{\"method\": \"getnameinfo\", \"params\": [\"" + domain + "\"]}";
-                string response = await main.APIPost("", false, content);
-                JObject jObject = JObject.Parse(response);
-                // Get block height
-                string Nodeinfo = await main.APIGet("", false);
-                JObject jObjectInfo = JObject.Parse(Nodeinfo);
-                JObject chain = (JObject)jObjectInfo["chain"];
-                int height = Convert.ToInt32(chain["height"]);
-
-                labelInfo.Text = "";
-                if (jObject.ContainsKey("result"))
+                if (domain["name"].ToString() == Domain)
                 {
-                    JObject result = (JObject)jObject["result"];
-                    JObject start = (JObject)result["start"];
-                    if (start["reserved"].ToString().ToLower() == "true") labelInfo.Text = "Reserved for ICANN domain owner\n";
-                    if (result.ContainsKey("info"))
+                    if (domain.ContainsKey("status"))
                     {
-                        try
+                        switch (domain["status"].ToString())
                         {
-                            JObject info = (JObject)result["info"];
-                            string state = info["state"].ToString();
-                            JObject stats = (JObject)info["stats"];
-
-                            if (info["transfer"].ToString() != "0")
-                            {
-                                labelInfo.Text += "Transferring\n";
-                                int TransferEnd = Convert.ToInt32(stats["transferLockupEnd"].ToString());
-                                textBoxTransferAddress.Hide();
-                                buttonTransfer.Hide();
-                                if (height >= TransferEnd)
-                                {
-                                    buttonFinalize.Show();
-                                }
-                                else
-                                {
-                                    labelInfo.Text += "Finalize in " + (TransferEnd - height).ToString() + " blocks\n";
-                                    buttonCancel.Show();
-                                }
-                            }
-
-                            if (state == "CLOSED")
-                            {
-                                string expires = "Expires in ~" + stats["daysUntilExpire"].ToString() + " days\n";
-                                labelInfo.Text += expires;
-                            }
-                            else labelInfo.Text += state + "\n";
-
-
-                            // Get DNS if the domain isn't in auction
-                            if (state == "CLOSED") GetDNS();
-
-
-                        }
-                        catch (Exception ex)
-                        {
-                            // No info -> Domain not in wallet
-                            labelInfo.Text = "No info in node";
+                            case "transferring":
+                                buttonFinalize.Visible = true;
+                                buttonCancel.Visible = true;
+                                buttonTransfer.Visible = false;
+                                textBoxTransferAddress.Visible = false;
+                                break;
+                            case "closed":
+                                buttonCancel.Visible = false;
+                                buttonFinalize.Visible = false;
+                                break;
                         }
                     }
                 }
-                else
-                {
-                    labelInfo.Text = "Error getting Name";
-                }
             }
-            catch (Exception ex)
-            {
-                main.AddLog(ex.Message);
-            }
-
-
-            if (!main.Domains.Contains(domain))
-            {
-                groupBoxManage.Hide();
-            }
-        }
-
-        private void DomainForm_Load(object sender, EventArgs e)
-        {
-            GetName();
         }
 
         private async void buttonRenew_Click(object sender, EventArgs e)
         {
-            string content = "{\"method\": \"renew\", \"params\": [\"" + domain + "\"]}";
-            string response = await main.APIPost("", true, content);
+            string content = "{\"method\": \"renew\", \"params\": [\"" + Domain + "\"]}";
+            string response = await Main.APIPost("", true, content);
             if (response == "Error")
             {
                 NotifyForm notify = new NotifyForm("Error renewing domain");
@@ -137,12 +77,12 @@ namespace FireWalletLite
             JObject jObject = JObject.Parse(response);
             if (jObject.ContainsKey("result"))
             {
-                main.AddLog(jObject["result"].ToString());
+                Main.AddLog(jObject["result"].ToString());
                 JObject result = (JObject)jObject["result"];
                 if (result.ContainsKey("txid"))
                 {
                     string txid = result["txid"].ToString();
-                    NotifyForm notify = new NotifyForm("Renewed domain", "Explorer", main.TXExplorer + txid);
+                    NotifyForm notify = new NotifyForm("Renewed domain", "Explorer", Main.TXExplorer + txid);
                     notify.ShowDialog();
                     notify.Dispose();
                 }
@@ -158,14 +98,14 @@ namespace FireWalletLite
                 NotifyForm notify = new NotifyForm("Error renewing domain");
                 notify.ShowDialog();
                 notify.Dispose();
-                main.AddLog(jObject.ToString());
+                Main.AddLog(jObject.ToString());
             }
         }
 
         private async void buttonTransfer_Click(object sender, EventArgs e)
         {
             string address = textBoxTransferAddress.Text;
-            bool valid = await main.ValidAddress(address);
+            bool valid = await Main.ValidAddress(address);
             if (!valid)
             {
                 NotifyForm notify = new NotifyForm("Invalid address");
@@ -173,8 +113,9 @@ namespace FireWalletLite
                 notify.Dispose();
                 return;
             }
-            string content = "{\"method\": \"transfer\", \"params\": [\"" + domain + "\", \"" + address + "\"]}";
-            string response = await main.APIPost("", true, content);
+            string path = "wallet/" + Main.Account + "/transfer";
+            string content = "{\"passphrase\": \"" + Main.Password + "\", \"name\": \"" + Domain + "\", \"broadcast\": true, \"sign\": true, \"address\": \"" + address + "\"}";
+            string response = await Main.APIPost(path, true, content);
             if (response == "Error")
             {
                 NotifyForm notify = new NotifyForm("Error transferring domain");
@@ -183,209 +124,118 @@ namespace FireWalletLite
                 return;
             }
             JObject jObject = JObject.Parse(response);
-            if (jObject.ContainsKey("result"))
+            if (jObject.ContainsKey("hash"))
             {
-                main.AddLog(jObject["result"].ToString());
-                JObject result = (JObject)jObject["result"];
-                if (result.ContainsKey("txid"))
-                {
-                    string txid = result["txid"].ToString();
-                    NotifyForm notify = new NotifyForm("Renewed domain", "Explorer", main.TXExplorer + txid);
-                    notify.ShowDialog();
-                    notify.Dispose();
-                }
-                else
-                {
-                    NotifyForm notify = new NotifyForm("Error renewing domain");
-                    notify.ShowDialog();
-                    notify.Dispose();
-                }
+                string txid = jObject["hash"].ToString();
+                NotifyForm notify = new NotifyForm("Transferred domain", "Explorer", Main.TXExplorer + txid);
+                notify.ShowDialog();
+                notify.Dispose();
+                AddDomainInfo("transferring");
             }
             else
             {
-                NotifyForm notify = new NotifyForm("Error renewing domain");
+                NotifyForm notify = new NotifyForm("Error transferring domain");
                 notify.ShowDialog();
                 notify.Dispose();
-                main.AddLog(jObject.ToString());
             }
         }
 
         private void buttonFinalize_Click(object sender, EventArgs e)
         {
-            string content = "{\"method\": \"finalize\", \"params\": [\"" + domain + "\"]}";
-            string response = main.APIPost("", true, content).Result;
+            string path = "wallet/" + Main.Account + "/finalize";
+            string content = "{\"passphrase\": \"" + Main.Password + "\", \"name\": \"" + Domain + "\", \"broadcast\": true, \"sign\": true}";
+            string response = Main.APIPost(path, true, content).Result;
             if (response == "Error")
             {
-                NotifyForm notify = new NotifyForm("Error finalizing tranfer");
+                NotifyForm notify = new NotifyForm("Error finalizing transfer");
                 notify.ShowDialog();
                 notify.Dispose();
                 return;
             }
             JObject jObject = JObject.Parse(response);
-            if (jObject.ContainsKey("result"))
+            if (jObject.ContainsKey("hash"))
             {
-                main.AddLog(jObject["result"].ToString());
-                JObject result = (JObject)jObject["result"];
-                if (result.ContainsKey("txid"))
-                {
-                    string txid = result["txid"].ToString();
-                    NotifyForm notify = new NotifyForm("Finalized tranfer", "Explorer", main.TXExplorer + txid);
-                    notify.ShowDialog();
-                    notify.Dispose();
-                }
-                else
-                {
-                    NotifyForm notify = new NotifyForm("Error finalizing tranfer");
-                    notify.ShowDialog();
-                    notify.Dispose();
-                }
+                string txid = jObject["hash"].ToString();
+                NotifyForm notify = new NotifyForm("Finalized domain", "Explorer", Main.TXExplorer + txid);
+                notify.ShowDialog();
+                notify.Dispose();
+                AddDomainInfo("closed");
             }
             else
             {
-                NotifyForm notify = new NotifyForm("Error finalizing tranfer");
+                NotifyForm notify = new NotifyForm("Error finalizing domain");
                 notify.ShowDialog();
                 notify.Dispose();
-                main.AddLog(jObject.ToString());
             }
         }
         private void buttonCancel_Click(object sender, EventArgs e)
         {
-            string content = "{\"method\": \"cancel\", \"params\": [\"" + domain + "\"]}";
-            string response = main.APIPost("", true, content).Result;
+            string path = "wallet/" + Main.Account + "/cancel";
+            string content = "{\"passphrase\": \"" + Main.Password + "\", \"name\": \"" + Domain + "\", \"broadcast\": true, \"sign\": true}";
+            string response = Main.APIPost(path, true, content).Result;
             if (response == "Error")
             {
-                NotifyForm notify = new NotifyForm("Error cancelling tranfer");
+                NotifyForm notify = new NotifyForm("Error cancelling transfer");
                 notify.ShowDialog();
                 notify.Dispose();
                 return;
             }
             JObject jObject = JObject.Parse(response);
-            if (jObject.ContainsKey("result"))
+            if (jObject.ContainsKey("hash"))
             {
-                main.AddLog(jObject["result"].ToString());
-                JObject result = (JObject)jObject["result"];
-                if (result.ContainsKey("txid"))
-                {
-                    string txid = result["txid"].ToString();
-                    NotifyForm notify = new NotifyForm("Cancelled tranfer", "Explorer", main.TXExplorer + txid);
-                    notify.ShowDialog();
-                    notify.Dispose();
-                }
-                else
-                {
-                    NotifyForm notify = new NotifyForm("Error cancelling tranfer");
-                    notify.ShowDialog();
-                    notify.Dispose();
-                }
+                string txid = jObject["hash"].ToString();
+                NotifyForm notify = new NotifyForm("Canceled transfer", "Explorer", Main.TXExplorer + txid);
+                notify.ShowDialog();
+                notify.Dispose();
+                AddDomainInfo("closed");
             }
             else
             {
-                NotifyForm notify = new NotifyForm("Error cancelling tranfer");
+                NotifyForm notify = new NotifyForm("Error cancelling transfer");
                 notify.ShowDialog();
                 notify.Dispose();
-                main.AddLog(jObject.ToString());
             }
         }
 
-
-        // Get DNS records for domain. Not implemented yet
-        private async void GetDNS()
+        private void AddDomainInfo(string status)
         {
-            // Get DNS records
-            string contentDNS = "{\"method\": \"getnameresource\", \"params\": [\"" + domain + "\"]}";
-            string responseDNS = await main.APIPost("", false, contentDNS);
-            JObject jObjectDNS = JObject.Parse(responseDNS);
-
-            if (jObjectDNS["result"].ToString() == "")
+            if (File.Exists(Main.dir + "domains.json"))
             {
-                // Not registered
-                groupBoxDNS.Visible = false;
-                return;
-            }
-
-            JObject result = (JObject)jObjectDNS["result"];
-            JArray records = (JArray)result["records"];
-            // For each record
-            int i = 0;
-            foreach (JObject record in records)
-            {
-                Panel DNSPanel = new Panel();
-                // Count for scroll width
-                DNSPanel.Width = panelDNS.Width - SystemInformation.VerticalScrollBarWidth - 2;
-                DNSPanel.Height = 60;
-                DNSPanel.BorderStyle = BorderStyle.FixedSingle;
-                DNSPanel.Top = 62 * i;
-
-                Label DNSType = new Label();
-                DNSType.Text = record["type"].ToString();
-                DNSType.Location = new System.Drawing.Point(10, 10);
-                DNSType.AutoSize = true;
-                DNSType.Font = new Font(DNSType.Font.FontFamily, 11.0f, FontStyle.Bold);
-                DNSPanel.Controls.Add(DNSType);
-
-
-                switch (DNSType.Text)
+                bool found = false;
+                JArray domains = JArray.Parse(File.ReadAllText(Main.dir + "domains.json"));
+                foreach (JObject domain in domains)
                 {
-                    case "NS":
-                        Label DNSNS = new Label();
-                        DNSNS.Text = record["ns"].ToString();
-                        DNSNS.Location = new System.Drawing.Point(10, 30);
-                        DNSNS.AutoSize = true;
-                        DNSPanel.Controls.Add(DNSNS);
-                        break;
-                    case "GLUE4":
-                    case "GLUE6":
-                        Label DNSNS1 = new Label();
-                        DNSNS1.Text = record["ns"].ToString();
-                        DNSNS1.Location = new System.Drawing.Point(10, 30);
-                        DNSNS1.AutoSize = true;
-                        DNSPanel.Controls.Add(DNSNS1);
-                        Label address = new Label();
-                        address.Text = record["address"].ToString();
-                        address.Location = new System.Drawing.Point(DNSNS1.Left + DNSNS1.Width + 20, 30);
-                        address.AutoSize = true;
-                        DNSPanel.Controls.Add(address);
-                        break;
-                    case "DS":
-                        Label keyTag = new Label();
-                        keyTag.Text = record["keyTag"].ToString();
-                        keyTag.Location = new System.Drawing.Point(10, 30);
-                        keyTag.AutoSize = true;
-                        DNSPanel.Controls.Add(keyTag);
-                        Label algorithm = new Label();
-                        algorithm.Text = record["algorithm"].ToString();
-                        algorithm.Location = new System.Drawing.Point(keyTag.Left + keyTag.Width + 10, 30);
-                        algorithm.AutoSize = true;
-                        DNSPanel.Controls.Add(algorithm);
-                        Label digestType = new Label();
-                        digestType.Text = record["digestType"].ToString();
-                        digestType.Location = new System.Drawing.Point(algorithm.Left + algorithm.Width + 10, 30);
-                        digestType.AutoSize = true;
-                        DNSPanel.Controls.Add(digestType);
-                        Label digest = new Label();
-                        digest.Text = record["digest"].ToString();
-                        digest.Location = new System.Drawing.Point(digestType.Left + digestType.Width + 10, 30);
-                        digest.AutoSize = true;
-                        DNSPanel.Controls.Add(digest);
-                        break;
-                    case "TXT":
-                        JArray txts = (JArray)record["txt"];
-                        int j = 0;
-                        foreach (string txt in txts)
+                    if (domain["name"].ToString() == Domain)
+                    {
+                        found = true;
+                        if (domain.ContainsKey("status"))
                         {
-                            Label DNSTXT = new Label();
-                            DNSTXT.Text = txt;
-                            DNSTXT.Location = new System.Drawing.Point(10, 30 + (j * 20));
-                            DNSTXT.AutoSize = true;
-                            DNSPanel.Controls.Add(DNSTXT);
-                            DNSPanel.Height = 60 + (j * 20);
-                            j++;
+                            domain["status"] = status;
                         }
-                        break;
-
+                        else
+                        {
+                            domain.Add("status", status);
+                        }
+                    }
                 }
-                panelDNS.Controls.Add(DNSPanel);
-                i++;
+
+                if (!found)
+                {
+                    JObject domain = new JObject();
+                    domain["name"] = Domain;
+                    domain["status"] = status;
+                    domains.Add(domain);
+                }
+                File.WriteAllText(Main.dir + "domains.json", domains.ToString());
+            }
+            else
+            {
+                JArray domains = new JArray();
+                JObject domain = new JObject();
+                domain["name"] = Domain;
+                domain["status"] = status;
+                domains.Add(domain);
+                File.WriteAllText(Main.dir + "domains.json", domains.ToString());
             }
         }
     }

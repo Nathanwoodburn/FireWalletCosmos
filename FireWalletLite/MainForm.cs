@@ -1,10 +1,6 @@
-﻿using System.Data;
-using System.Diagnostics;
-using System.DirectoryServices.ActiveDirectory;
-using System.Runtime.InteropServices;
+﻿using System.Diagnostics;
 using FireWallet;
 using Newtonsoft.Json.Linq;
-using static QRCoder.PayloadGenerator;
 
 namespace FireWalletLite
 {
@@ -35,8 +31,8 @@ namespace FireWalletLite
         public Dictionary<string, string> Theme { get; set; }
         HttpClient httpClient = new HttpClient();
         Decimal Balance { get; set; }
-        String Account = "primary";
-        String Password { get; set; }
+        public String Account = "primary";
+        public String Password { get; set; }
         #endregion
         public MainForm()
         {
@@ -247,7 +243,6 @@ namespace FireWalletLite
             string port = "1203";
             if (wallet) port = port + "9";
             else port = port + "7";
-
             HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Post, "http://" + ip + ":" + port + "/" + path);
             //req.Headers.Add("Authorization", "Basic " + Convert.ToBase64String(System.Text.ASCIIEncoding.ASCII.GetBytes("x:" + key)));
             req.Content = new StringContent(content);
