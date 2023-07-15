@@ -572,32 +572,6 @@ namespace FireWalletLite
                 };
 
                 tmpPanel.Controls.Add(labelHash);
-
-                JArray inputs = JArray.Parse(tx["inputs"].ToString());
-                JArray outputs = JArray.Parse(tx["outputs"].ToString());
-                int inputCount = inputs.Count;
-                int outputCount = outputs.Count;
-
-                decimal costHNS = decimal.Parse(txs[toGet - i - 1]["amount"].ToString());
-                string cost = "";
-                if (costHNS < 0)
-                {
-                    cost = "Spent: " + (costHNS * -1).ToString() + " HNS";
-                }
-                else if (costHNS > 0)
-                {
-                    cost = "Received: " + costHNS.ToString() + " HNS";
-                }
-
-                Label labelInputOutput = new Label()
-                {
-                    Text = "Inputs: " + inputCount + " Outputs: " + outputCount + "\n" + cost,
-                    AutoSize = true,
-                    Location = new Point(300, 5)
-                };
-                tmpPanel.Controls.Add(labelInputOutput);
-
-
                 tmpPanel.Click += (sender, e) =>
                 {
                     ProcessStartInfo psi = new ProcessStartInfo
@@ -624,7 +598,6 @@ namespace FireWalletLite
 
 
             }
-
             groupBoxHistory.Controls.Clear();
             Panel txPanel = new Panel();
             txPanel.Width = groupBoxHistory.Width - SystemInformation.VerticalScrollBarWidth;
