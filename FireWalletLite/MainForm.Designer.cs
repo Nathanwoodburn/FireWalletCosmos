@@ -44,7 +44,6 @@
             LoginButton = new Button();
             panelPortfolio = new Panel();
             groupBoxHistory = new GroupBox();
-            panelHistory = new Panel();
             buttonRenew = new Button();
             groupBoxDomains = new GroupBox();
             panelDomainList = new Panel();
@@ -59,7 +58,6 @@
             ((System.ComponentModel.ISupportInitialize)pictureBoxLogo).BeginInit();
             groupBoxLogin.SuspendLayout();
             panelPortfolio.SuspendLayout();
-            groupBoxHistory.SuspendLayout();
             groupBoxDomains.SuspendLayout();
             panelNav.SuspendLayout();
             groupBoxAccount.SuspendLayout();
@@ -195,21 +193,12 @@
             // 
             // groupBoxHistory
             // 
-            groupBoxHistory.Controls.Add(panelHistory);
             groupBoxHistory.Location = new Point(102, 226);
             groupBoxHistory.Name = "groupBoxHistory";
             groupBoxHistory.Size = new Size(299, 293);
             groupBoxHistory.TabIndex = 4;
             groupBoxHistory.TabStop = false;
             groupBoxHistory.Text = "History";
-            // 
-            // panelHistory
-            // 
-            panelHistory.Dock = DockStyle.Fill;
-            panelHistory.Location = new Point(3, 19);
-            panelHistory.Name = "panelHistory";
-            panelHistory.Size = new Size(293, 271);
-            panelHistory.TabIndex = 0;
             // 
             // buttonRenew
             // 
@@ -331,7 +320,6 @@
             groupBoxLogin.ResumeLayout(false);
             groupBoxLogin.PerformLayout();
             panelPortfolio.ResumeLayout(false);
-            groupBoxHistory.ResumeLayout(false);
             groupBoxDomains.ResumeLayout(false);
             panelNav.ResumeLayout(false);
             groupBoxAccount.ResumeLayout(false);
@@ -365,6 +353,5 @@
         private ToolStripStatusLabel LabelSyncWarning;
         private ToolStripDropDownButton DropDownHelp;
         private GroupBox groupBoxHistory;
-        private Panel panelHistory;
     }
 }
