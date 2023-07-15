@@ -57,8 +57,10 @@ public partial class DomainForm : Form
 
     private async void buttonRenew_Click(object sender, EventArgs e)
     {
-        var content = "{\"method\": \"renew\", \"params\": [\"" + Domain + "\"]}";
-        var response = await Main.APIPost("", true, content);
+        var path = "wallet/" + Main.Account + "/renewal";
+        var content = "{\"passphrase\": \"" + Main.Password + "\", \"name\": \"" + Domain +
+                      "\", \"broadcast\": true, \"sign\": true}";
+        var response = await Main.APIPost(path, true, content);
         if (response == "Error")
         {
             var notify = new NotifyForm("Error renewing domain");
@@ -68,30 +70,19 @@ public partial class DomainForm : Form
         }
 
         var jObject = JObject.Parse(response);
-        if (jObject.ContainsKey("result"))
+        if (jObject.ContainsKey("hash"))
         {
-            Main.AddLog(jObject["result"].ToString());
-            var result = (JObject)jObject["result"];
-            if (result.ContainsKey("txid"))
-            {
-                var txid = result["txid"].ToString();
-                var notify = new NotifyForm("Renewed domain", "Explorer", Main.TXExplorer + txid);
-                notify.ShowDialog();
-                notify.Dispose();
-            }
-            else
-            {
-                var notify = new NotifyForm("Error renewing domain");
-                notify.ShowDialog();
-                notify.Dispose();
-            }
+            var txid = jObject["hash"].ToString();
+            var notify = new NotifyForm("Renew sent", "Explorer", Main.TXExplorer + txid);
+            notify.ShowDialog();
+            notify.Dispose();
+            AddDomainInfo("closed");
         }
         else
         {
             var notify = new NotifyForm("Error renewing domain");
             notify.ShowDialog();
             notify.Dispose();
-            Main.AddLog(jObject.ToString());
         }
     }
 
@@ -136,12 +127,12 @@ public partial class DomainForm : Form
         }
     }
 
-    private void buttonFinalize_Click(object sender, EventArgs e)
+    private async void buttonFinalize_Click(object sender, EventArgs e)
     {
         var path = "wallet/" + Main.Account + "/finalize";
         var content = "{\"passphrase\": \"" + Main.Password + "\", \"name\": \"" + Domain +
                       "\", \"broadcast\": true, \"sign\": true}";
-        var response = Main.APIPost(path, true, content).Result;
+        var response = await Main.APIPost(path, true, content);
         if (response == "Error")
         {
             var notify = new NotifyForm("Error finalizing transfer");
@@ -167,12 +158,12 @@ public partial class DomainForm : Form
         }
     }
 
-    private void buttonCancel_Click(object sender, EventArgs e)
+    private async void buttonCancel_Click(object sender, EventArgs e)
     {
         var path = "wallet/" + Main.Account + "/cancel";
         var content = "{\"passphrase\": \"" + Main.Password + "\", \"name\": \"" + Domain +
                       "\", \"broadcast\": true, \"sign\": true}";
-        var response = Main.APIPost(path, true, content).Result;
+        var response = await Main.APIPost(path, true, content);
         if (response == "Error")
         {
             var notify = new NotifyForm("Error cancelling transfer");
