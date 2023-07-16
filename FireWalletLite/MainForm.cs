@@ -8,6 +8,48 @@ public partial class MainForm : Form
 {
     private bool testedLogin;
 
+    #region Constants and Config
+
+    // Directory to store files including logs, theme and hsd node
+    public string dir = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\"
+        + Application.ProductName.Trim().Replace(" ", "") + "\\";
+
+    // How many days to check for domain exiries. If domain will expire in less than this, prompt user to renew.
+    public int daysToExpire = 90;
+
+    // Explorer URLs for transactions and domains
+    public string TXExplorer = "https://niami.io/tx/";
+    public string DomainExplorer = "https://niami.io/domain/";
+
+    // Links to show in help dropdown menu
+    public Dictionary<string, string> HelpLinks = new()
+    {
+        { "Discord", "https://l.woodburn.au/discord" },
+        { "Separator", "" },
+        { "Github", "https://github.com/nathanwoodburn/FireWalletLite" }
+    };
+
+    // Min Confirmations for transactions to be considered valid
+    public int MinConfirmations = 1;
+
+    public Dictionary<string, string> Theme { get; set; } = new()
+    {
+        { "background", "#000000" },
+        { "foreground", "#8e05c2"},
+        { "background-alt", "#3e065f"},
+        { "foreground-alt", "#ffffff"}
+    };
+
+    #endregion
+
+    #region Variables
+    private readonly HttpClient httpClient = new();
+    private decimal Balance { get; set; }
+    public string Account = "primary";
+    public string Password { get; set; }
+
+    #endregion
+
     public MainForm()
     {
         InitializeComponent();
@@ -243,62 +285,28 @@ public partial class MainForm : Form
         notifyForm2.Dispose();
     }
 
-    #region Constants and Config
-
-    // Directory to store files including logs, theme and hsd node
-    public string dir = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\"
-        + Application.ProductName.Trim().Replace(" ", "") + "\\";
-
-    // How many days to check for domain exiries. If domain will expire in less than this, prompt user to renew.
-    public int daysToExpire = 90;
-
-    // Explorer URLs for transactions and domains
-    public string TXExplorer = "https://niami.io/tx/";
-    public string DomainExplorer = "https://niami.io/domain/";
-
-    // Links to show in help dropdown menu
-    public Dictionary<string, string> HelpLinks = new()
-    {
-        { "Discord", "https://l.woodburn.au/discord" },
-        { "Separator", "" },
-        { "Github", "https://github.com/nathanwoodburn/FireWalletLite" }
-    };
-
-    // Min Confirmations for transactions to be considered valid
-    public int MinConfirmations = 1;
-
-    #endregion
-
-    #region Variables
-
-    public Dictionary<string, string> Theme { get; set; }
-    private readonly HttpClient httpClient = new();
-    private decimal Balance { get; set; }
-    public string Account = "primary";
-    public string Password { get; set; }
-
-    #endregion
-
     #region Theming
 
     private void UpdateTheme()
     {
         // Check if file exists
-        if (!Directory.Exists(dir)) CreateConfig(dir);
+        if (!Directory.Exists(dir)) Directory.CreateDirectory(dir);
 
-        if (!File.Exists(dir + "theme.txt")) CreateConfig(dir);
-
-        // Read file
-        var sr = new StreamReader(dir + "theme.txt");
-        Theme = new Dictionary<string, string>();
-        while (!sr.EndOfStream)
+        if (File.Exists(dir + "theme.txt")) // Use custom theme
         {
-            var line = sr.ReadLine();
-            var split = line.Split(':');
-            Theme.Add(split[0].Trim(), split[1].Trim());
-        }
 
-        sr.Dispose();
+            // Read file
+            var sr = new StreamReader(dir + "theme.txt");
+            Theme = new Dictionary<string, string>();
+            while (!sr.EndOfStream)
+            {
+                var line = sr.ReadLine();
+                var split = line.Split(':');
+                Theme.Add(split[0].Trim(), split[1].Trim());
+            }
+
+            sr.Dispose();
+        }
 
         if (!Theme.ContainsKey("background") || !Theme.ContainsKey("background-alt") ||
             !Theme.ContainsKey("foreground") || !Theme.ContainsKey("foreground-alt"))
@@ -339,20 +347,6 @@ public partial class MainForm : Form
         }
 
         if (c.GetType() == typeof(Panel)) c.Dock = DockStyle.Fill;
-    }
-
-    private void CreateConfig(string dir)
-    {
-        if (!Directory.Exists(dir)) Directory.CreateDirectory(dir);
-
-        var streamWriter = new StreamWriter(dir + "theme.txt");
-        streamWriter.WriteLine("background: #000000");
-        streamWriter.WriteLine("foreground: #8e05c2");
-        streamWriter.WriteLine("background-alt: #3e065f");
-        streamWriter.WriteLine("foreground-alt: #ffffff");
-        streamWriter.WriteLine("error: #ff0000");
-        streamWriter.Dispose();
-        AddLog("Created theme file");
     }
 
     #endregion
