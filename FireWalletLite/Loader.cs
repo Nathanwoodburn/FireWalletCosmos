@@ -6,6 +6,13 @@ namespace FireWalletLite;
 
 public partial class Loader : Form
 {
+    #region Constants
+
+    private readonly MainForm mainForm = new();
+    private readonly bool hideScreen = true; // Hide screen or not (for debug)
+    private readonly Process HSDProcess;
+
+    #endregion
     public Loader()
     {
         InitializeComponent();
@@ -61,14 +68,6 @@ public partial class Loader : Form
         splashScreen.Dispose();
         mainForm.Show();
     }
-
-    #region Constants
-
-    private readonly MainForm mainForm = new();
-    private readonly bool hideScreen = true;
-    private readonly Process HSDProcess;
-
-    #endregion
 
     #region Git
 
@@ -184,30 +183,36 @@ public partial class Loader : Form
             mainForm.AddLog(ex.Message);
             if (ex.Message.Contains("to start process 'git'"))
             {
-                var notifyForm = new NotifyForm("Git needs to be installed\nCheck logs for more details");
+                var notifyForm = new NotifyForm("Git is not installed\nPlease install it to install HSD dependencies",
+                    "Install", "https://git-scm.com/download/win");
                 notifyForm.ShowDialog();
                 notifyForm.Dispose();
+                Environment.Exit(21);
             }
             else if (ex.Message.Contains("to start process 'node'"))
             {
-                var notifyForm = new NotifyForm("Node needs to be installed\nCheck logs for more details");
+                var notifyForm = new NotifyForm("Node is not installed\nPlease install it to install HSD dependencies",
+                    "Install", "https://nodejs.org/en/download");
                 notifyForm.ShowDialog();
                 notifyForm.Dispose();
+                Environment.Exit(22);
             }
             else if (ex.Message.Contains("to start process 'npm'"))
             {
-                var notifyForm = new NotifyForm("NPM needs to be installed\nCheck logs for more details");
+                var notifyForm = new NotifyForm("NPM is not installed\nPlease install it to install HSD dependencies",
+                    "Install", "https://docs.npmjs.com/downloading-and-installing-node-js-and-npm");
                 notifyForm.ShowDialog();
                 notifyForm.Dispose();
+                Environment.Exit(23);
             }
             else
             {
                 var notifyForm = new NotifyForm("Git/NPM Install FAILED\nCheck logs for more details");
                 notifyForm.ShowDialog();
                 notifyForm.Dispose();
+                Environment.Exit(24);
             }
 
-            Environment.Exit(24);
         }
     }
 

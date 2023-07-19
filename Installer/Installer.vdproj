@@ -37,6 +37,27 @@
         "PrivateKeyFile" = "8:"
         "TimeStampServer" = "8:"
         "InstallerBootstrapper" = "3:2"
+            "BootstrapperCfg:{63ACBE69-63AA-4F98-B2B6-99F9E24495F2}"
+            {
+            "Enabled" = "11:TRUE"
+            "PromptEnabled" = "11:TRUE"
+            "PrerequisitesLocation" = "2:1"
+            "Url" = "8:"
+            "ComponentsUrl" = "8:"
+                "Items"
+                {
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:.NETFramework,Version=v4.7.2"
+                    {
+                    "Name" = "8:Microsoft .NET Framework 4.7.2 (x86 and x64)"
+                    "ProductCode" = "8:.NETFramework,Version=v4.7.2"
+                    }
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:Microsoft.NetCore.DesktopRuntime.6.0.x64"
+                    {
+                    "Name" = "8:.NET Desktop Runtime 6.0.18 (x64)"
+                    "ProductCode" = "8:Microsoft.NetCore.DesktopRuntime.6.0.x64"
+                    }
+                }
+            }
         }
         "Release"
         {
@@ -53,6 +74,14 @@
         "PrivateKeyFile" = "8:"
         "TimeStampServer" = "8:"
         "InstallerBootstrapper" = "3:2"
+            "BootstrapperCfg:{63ACBE69-63AA-4F98-B2B6-99F9E24495F2}"
+            {
+            "Enabled" = "11:TRUE"
+            "PromptEnabled" = "11:TRUE"
+            "PrerequisitesLocation" = "2:1"
+            "Url" = "8:"
+            "ComponentsUrl" = "8:"
+            }
         }
     }
     "Deployable"
@@ -141,7 +170,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:FireWalletLite"
         "ProductCode" = "8:{23670E44-E1CD-40B5-881D-40657BD30860}"
-        "PackageCode" = "8:{EBE2AF53-E970-4708-9E43-05366A939681}"
+        "PackageCode" = "8:{2AC188AF-0BEF-4B0E-BD6F-F44A7EEB94F3}"
         "UpgradeCode" = "8:{6966FD44-6B8C-43C0-981A-E36449BF2DA8}"
         "AspNetVersion" = "8:"
         "RestartWWWService" = "11:FALSE"
