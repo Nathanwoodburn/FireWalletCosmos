@@ -1,6 +1,9 @@
 # FireWalletLite
 A lite wallet for Handshake.  
-This is aimed to be mainly used for holding HNS and domains without sending anything.
+This is aimed to be mainly used for holding HNS and domains without sending anything.  
+For example if you want to gift a domain to someone, you can have them use this wallet to store the wallet.  
+You will still need to renew the domains at least every 2 years.
+
 
 ## Features
 First run flow:
@@ -29,3 +32,10 @@ This wallet does not (and will never) support
 
 
 If you want to use a wallet with more features, please use [Fire Wallet](https://firewallet.au) or [Bob Wallet](https://bobwallet.io) instead.
+
+## Install
+FireWalletLite is available for Windows only.  
+You can download the latest prebuilt release from [here](https://git.woodburn.au/nathanwoodburn/FireWalletLite/releases).  
+You should download the `FireWalletLite.zip` file and extract it to a folder then run the `setup.exe` file as this file will install the .net runtime if it is not already installed.  
+
+**You can also build it yourself by cloning this repo and building it in Visual Studio.**
