@@ -15,6 +15,12 @@
     {
         "Entry"
         {
+        "MsmKey" = "8:_377ED7CF62C146948B3BF5DA453AF666"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_AE21837395E3477BAB0C9E460C5F9E1E"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -121,6 +127,26 @@
         }
         "File"
         {
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_377ED7CF62C146948B3BF5DA453AF666"
+            {
+            "SourcePath" = "8:..\\..\\..\\..\\Downloads\\favicon.ico"
+            "TargetName" = "8:favicon.ico"
+            "Tag" = "8:"
+            "Folder" = "8:_F2E4B39C8E3B4447A5FD1EDBBBF6F36B"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
         }
         "FileType"
         {
@@ -176,7 +202,7 @@
         "Product"
         {
         "Name" = "8:Microsoft Visual Studio"
-        "ProductName" = "8:FireWalletLite"
+        "ProductName" = "8:9ja Cosmos Wallet"
         "ProductCode" = "8:{23670E44-E1CD-40B5-881D-40657BD30860}"
         "PackageCode" = "8:{2CCCD1E4-40D9-4E58-8D3A-2039BD1CD215}"
         "UpgradeCode" = "8:{6966FD44-6B8C-43C0-981A-E36449BF2DA8}"
@@ -189,7 +215,7 @@
         "Manufacturer" = "8:Nathan.Woodburn/"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
-        "Title" = "8:FireWalletLite"
+        "Title" = "8:9ja Cosmos Wallet"
         "Subject" = "8:"
         "ARPCONTACT" = "8:Nathan.Woodburn/"
         "Keywords" = "8:"
@@ -300,7 +326,7 @@
         {
             "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_41DBEDCE7AA04AA6A5749C1CCDA9E389"
             {
-            "Name" = "8:FireWalletLite"
+            "Name" = "8:9ja Cosmos Wallet"
             "Arguments" = "8:"
             "Description" = "8:"
             "ShowCmd" = "3:1"
@@ -309,7 +335,7 @@
             "Target" = "8:_AE21837395E3477BAB0C9E460C5F9E1E"
             "Folder" = "8:_C5178F6D7FA7478084860195A2F5CE00"
             "WorkingFolder" = "8:_F2E4B39C8E3B4447A5FD1EDBBBF6F36B"
-            "Icon" = "8:"
+            "Icon" = "8:_377ED7CF62C146948B3BF5DA453AF666"
             "Feature" = "8:"
             }
         }

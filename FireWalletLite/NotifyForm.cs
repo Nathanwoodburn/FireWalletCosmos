@@ -119,6 +119,8 @@ public partial class NotifyForm : Form
 
     private void ThemeControl(Control c)
     {
+        FontFamily ff = new FontFamily("Verdana");
+        c.Font = new Font(ff, c.Font.Size, c.Font.Style);
         if (c.GetType() == typeof(GroupBox) || c.GetType() == typeof(Panel))
         {
             c.ForeColor = ColorTranslator.FromHtml(Theme["foreground"]);

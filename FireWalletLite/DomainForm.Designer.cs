@@ -85,7 +85,7 @@
             // 
             buttonTransfer.FlatStyle = FlatStyle.Flat;
             buttonTransfer.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
-            buttonTransfer.Location = new Point(655, 70);
+            buttonTransfer.Location = new Point(655, 90);
             buttonTransfer.Name = "buttonTransfer";
             buttonTransfer.Size = new Size(89, 30);
             buttonTransfer.TabIndex = 1;
@@ -95,8 +95,8 @@
             // 
             // groupBoxManage
             // 
-            groupBoxManage.Controls.Add(labelTransfer);
             groupBoxManage.Controls.Add(textBoxTransferAddress);
+            groupBoxManage.Controls.Add(labelTransfer);
             groupBoxManage.Controls.Add(buttonRenew);
             groupBoxManage.Controls.Add(buttonCancel);
             groupBoxManage.Controls.Add(buttonFinalize);
@@ -112,7 +112,7 @@
             // labelTransfer
             // 
             labelTransfer.AutoSize = true;
-            labelTransfer.Location = new Point(6, 72);
+            labelTransfer.Location = new Point(6, 92);
             labelTransfer.Name = "labelTransfer";
             labelTransfer.Size = new Size(83, 25);
             labelTransfer.TabIndex = 3;
@@ -120,7 +120,7 @@
             // 
             // textBoxTransferAddress
             // 
-            textBoxTransferAddress.Location = new Point(95, 68);
+            textBoxTransferAddress.Location = new Point(95, 88);
             textBoxTransferAddress.Name = "textBoxTransferAddress";
             textBoxTransferAddress.Size = new Size(554, 32);
             textBoxTransferAddress.TabIndex = 2;
@@ -129,7 +129,7 @@
             // 
             buttonCancel.FlatStyle = FlatStyle.Flat;
             buttonCancel.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
-            buttonCancel.Location = new Point(242, 70);
+            buttonCancel.Location = new Point(244, 90);
             buttonCancel.Name = "buttonCancel";
             buttonCancel.Size = new Size(141, 30);
             buttonCancel.TabIndex = 1;
@@ -142,7 +142,7 @@
             // 
             buttonFinalize.FlatStyle = FlatStyle.Flat;
             buttonFinalize.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
-            buttonFinalize.Location = new Point(95, 70);
+            buttonFinalize.Location = new Point(97, 90);
             buttonFinalize.Name = "buttonFinalize";
             buttonFinalize.Size = new Size(141, 30);
             buttonFinalize.TabIndex = 1;

@@ -123,7 +123,7 @@ public partial class MainForm : Form
     private void MainForm_Load(object sender, EventArgs e)
     {
         groupBoxLogin.Left = (ClientSize.Width - groupBoxLogin.Width) / 2;
-        groupBoxLogin.Top = (ClientSize.Height - groupBoxLogin.Height) / 2;
+        groupBoxLogin.Top = ((ClientSize.Height - groupBoxLogin.Height) / 3) * 2;
         pictureBoxLogo.Height = groupBoxLogin.Top - 20;
         pictureBoxLogo.Width = pictureBoxLogo.Height;
         pictureBoxLogo.Top = 10;
@@ -327,10 +327,14 @@ public partial class MainForm : Form
 
         Width = Screen.PrimaryScreen.Bounds.Width / 5 * 3;
         Height = Screen.PrimaryScreen.Bounds.Height / 5 * 3;
+        
     }
 
     public void ThemeControl(Control c)
     {
+        // Use Verdana font
+        FontFamily ff = new FontFamily("Verdana");
+        c.Font = new Font(ff, c.Font.Size, c.Font.Style);
         if (c.GetType() == typeof(GroupBox) || c.GetType() == typeof(Panel))
         {
             c.ForeColor = ColorTranslator.FromHtml(Theme["foreground"]);
@@ -591,7 +595,7 @@ public partial class MainForm : Form
             if (renewable > 0)
             {
                 buttonRenew.Text = "Renew " + renewable + " domains";
-                buttonRenew.Enabled = true;
+                //buttonRenew.Enabled = true; TO DO LATER
             }
         }
         catch (Exception ex)

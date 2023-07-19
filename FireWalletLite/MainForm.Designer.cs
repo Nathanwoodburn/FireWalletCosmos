@@ -69,7 +69,7 @@
             statusStripMain.Items.AddRange(new ToolStripItem[] { SyncLabel, LabelSyncWarning, DropDownHelp });
             statusStripMain.Location = new Point(0, 0);
             statusStripMain.Name = "statusStripMain";
-            statusStripMain.Size = new Size(1099, 22);
+            statusStripMain.Size = new Size(1090, 22);
             statusStripMain.SizingGrip = false;
             statusStripMain.TabIndex = 0;
             statusStripMain.Text = "statusStrip1";
@@ -115,9 +115,9 @@
             // pictureBoxLogo
             // 
             pictureBoxLogo.Image = (Image)resources.GetObject("pictureBoxLogo.Image");
-            pictureBoxLogo.Location = new Point(453, 20);
+            pictureBoxLogo.Location = new Point(426, 11);
             pictureBoxLogo.Name = "pictureBoxLogo";
-            pictureBoxLogo.Size = new Size(130, 98);
+            pictureBoxLogo.Size = new Size(210, 139);
             pictureBoxLogo.SizeMode = PictureBoxSizeMode.Zoom;
             pictureBoxLogo.TabIndex = 5;
             pictureBoxLogo.TabStop = false;
@@ -129,7 +129,7 @@
             groupBoxLogin.Controls.Add(labelPassword);
             groupBoxLogin.Controls.Add(LoginButton);
             groupBoxLogin.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
-            groupBoxLogin.Location = new Point(279, 109);
+            groupBoxLogin.Location = new Point(279, 200);
             groupBoxLogin.Name = "groupBoxLogin";
             groupBoxLogin.Size = new Size(450, 250);
             groupBoxLogin.TabIndex = 4;
@@ -193,7 +193,7 @@
             // 
             // groupBoxHistory
             // 
-            groupBoxHistory.Location = new Point(102, 226);
+            groupBoxHistory.Location = new Point(119, 196);
             groupBoxHistory.Name = "groupBoxHistory";
             groupBoxHistory.Size = new Size(299, 293);
             groupBoxHistory.TabIndex = 4;
@@ -205,7 +205,7 @@
             buttonRenew.Enabled = false;
             buttonRenew.FlatStyle = FlatStyle.Flat;
             buttonRenew.Font = new Font("Segoe UI", 14F, FontStyle.Regular, GraphicsUnit.Point);
-            buttonRenew.Location = new Point(102, 171);
+            buttonRenew.Location = new Point(119, 141);
             buttonRenew.Name = "buttonRenew";
             buttonRenew.Size = new Size(299, 49);
             buttonRenew.TabIndex = 3;
@@ -217,7 +217,7 @@
             // 
             groupBoxDomains.Controls.Add(panelDomainList);
             groupBoxDomains.Font = new Font("Segoe UI", 14F, FontStyle.Regular, GraphicsUnit.Point);
-            groupBoxDomains.Location = new Point(407, 57);
+            groupBoxDomains.Location = new Point(424, 27);
             groupBoxDomains.Name = "groupBoxDomains";
             groupBoxDomains.Size = new Size(642, 469);
             groupBoxDomains.TabIndex = 2;
@@ -241,7 +241,7 @@
             panelNav.Dock = DockStyle.Left;
             panelNav.Location = new Point(0, 0);
             panelNav.Name = "panelNav";
-            panelNav.Size = new Size(96, 529);
+            panelNav.Size = new Size(113, 529);
             panelNav.TabIndex = 1;
             // 
             // buttonSend
@@ -250,7 +250,7 @@
             buttonSend.Font = new Font("Segoe UI", 14F, FontStyle.Regular, GraphicsUnit.Point);
             buttonSend.Location = new Point(3, 99);
             buttonSend.Name = "buttonSend";
-            buttonSend.Size = new Size(90, 36);
+            buttonSend.Size = new Size(107, 36);
             buttonSend.TabIndex = 1;
             buttonSend.Text = "Send";
             buttonSend.UseVisualStyleBackColor = true;
@@ -262,7 +262,7 @@
             buttonReceive.Font = new Font("Segoe UI", 14F, FontStyle.Regular, GraphicsUnit.Point);
             buttonReceive.Location = new Point(3, 57);
             buttonReceive.Name = "buttonReceive";
-            buttonReceive.Size = new Size(90, 36);
+            buttonReceive.Size = new Size(107, 36);
             buttonReceive.TabIndex = 0;
             buttonReceive.Text = "Receive";
             buttonReceive.UseVisualStyleBackColor = true;
@@ -273,7 +273,7 @@
             groupBoxAccount.Controls.Add(labelDomains);
             groupBoxAccount.Controls.Add(labelBalance);
             groupBoxAccount.Font = new Font("Segoe UI", 14F, FontStyle.Regular, GraphicsUnit.Point);
-            groupBoxAccount.Location = new Point(102, 57);
+            groupBoxAccount.Location = new Point(119, 27);
             groupBoxAccount.Name = "groupBoxAccount";
             groupBoxAccount.Size = new Size(299, 108);
             groupBoxAccount.TabIndex = 0;
@@ -302,7 +302,7 @@
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1099, 580);
+            ClientSize = new Size(1090, 617);
             Controls.Add(panelLogin);
             Controls.Add(panelPortfolio);
             Controls.Add(statusStripMain);

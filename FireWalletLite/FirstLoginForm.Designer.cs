@@ -55,11 +55,11 @@
             // 
             label1.AutoSize = true;
             label1.Font = new Font("Segoe UI", 16F, FontStyle.Regular, GraphicsUnit.Point);
-            label1.Location = new Point(284, 9);
+            label1.Location = new Point(243, 9);
             label1.Name = "label1";
-            label1.Size = new Size(232, 30);
+            label1.Size = new Size(313, 30);
             label1.TabIndex = 1;
-            label1.Text = "Welcome to FireWallet";
+            label1.Text = "Welcome to 9ja Cosmos Wallet";
             // 
             // label2
             // 
@@ -93,7 +93,7 @@
             // 
             // textBoxPassword
             // 
-            textBoxPassword.Location = new Point(143, 269);
+            textBoxPassword.Location = new Point(171, 269);
             textBoxPassword.Name = "textBoxPassword";
             textBoxPassword.Size = new Size(182, 23);
             textBoxPassword.TabIndex = 5;
@@ -101,7 +101,7 @@
             // 
             // textBoxPassword2
             // 
-            textBoxPassword2.Location = new Point(143, 298);
+            textBoxPassword2.Location = new Point(171, 298);
             textBoxPassword2.Name = "textBoxPassword2";
             textBoxPassword2.Size = new Size(182, 23);
             textBoxPassword2.TabIndex = 6;
@@ -135,7 +135,7 @@
             MaximizeBox = false;
             MinimizeBox = false;
             Name = "FirstLoginForm";
-            Text = "FireWallet";
+            Text = "9ja Cosmos Wallet";
             ResumeLayout(false);
             PerformLayout();
         }

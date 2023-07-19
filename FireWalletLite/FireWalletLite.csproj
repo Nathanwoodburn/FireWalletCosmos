@@ -7,9 +7,9 @@
     <UseWindowsForms>true</UseWindowsForms>
     <ImplicitUsings>enable</ImplicitUsings>
     <ApplicationIcon>favicon.ico</ApplicationIcon>
-    <Title>FireWallet Lite</Title>
+    <Title>9ja Cosmos Wallet</Title>
     <Authors>Nathan.Woodburn/</Authors>
-    <Product>FireWallet Lite</Product>
+    <Product>9ja Cosmos Wallet</Product>
   </PropertyGroup>
 
   <ItemGroup>
