@@ -12,7 +12,7 @@ public partial class NotifyForm : Form
     public Dictionary<string, string> Theme { get; set; } = new()
     {
         { "background", "#000000" },
-        { "foreground", "#8e05c2"},
+        { "foreground", "#fcba03"},
         { "background-alt", "#3e065f"},
         { "foreground-alt", "#ffffff"}
     };

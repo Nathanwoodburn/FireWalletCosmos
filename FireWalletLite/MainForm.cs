@@ -35,7 +35,7 @@ public partial class MainForm : Form
     public Dictionary<string, string> Theme { get; set; } = new()
     {
         { "background", "#000000" },
-        { "foreground", "#8e05c2"},
+        { "foreground", "#fcba03"},
         { "background-alt", "#3e065f"},
         { "foreground-alt", "#ffffff"}
     };
@@ -345,7 +345,6 @@ public partial class MainForm : Form
             c.ForeColor = ColorTranslator.FromHtml(Theme["foreground-alt"]);
             c.BackColor = ColorTranslator.FromHtml(Theme["background-alt"]);
         }
-
         if (c.GetType() == typeof(Panel)) c.Dock = DockStyle.Fill;
     }
 

@@ -91,18 +91,18 @@
             label3.TabIndex = 4;
             label3.Text = "Create a password:";
             // 
-            // textBox1
+            // textBoxPassword
             // 
             textBoxPassword.Location = new Point(143, 269);
-            textBoxPassword.Name = "textBox1";
+            textBoxPassword.Name = "textBoxPassword";
             textBoxPassword.Size = new Size(182, 23);
             textBoxPassword.TabIndex = 5;
             textBoxPassword.UseSystemPasswordChar = true;
             // 
-            // textBox2
+            // textBoxPassword2
             // 
             textBoxPassword2.Location = new Point(143, 298);
-            textBoxPassword2.Name = "textBox2";
+            textBoxPassword2.Name = "textBoxPassword2";
             textBoxPassword2.Size = new Size(182, 23);
             textBoxPassword2.TabIndex = 6;
             textBoxPassword2.UseSystemPasswordChar = true;
